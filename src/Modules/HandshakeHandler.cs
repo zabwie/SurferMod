@@ -28,9 +28,9 @@ internal sealed class HandshakeHandler
     /// <summary>
     /// Initiates the wait period before sending the secret to another player.
     /// </summary>
-    internal void WaitSendSecretToPlayer()
+    internal void WaitSendSecretToPlayer(MonoBehaviour coroutineRunner)
     {
-        extendedData.StartCoroutine(CoWaitSendSecretToPlayer());
+        coroutineRunner.StartCoroutine(CoWaitSendSecretToPlayer());
     }
 
     /// <summary>

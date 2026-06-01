@@ -11,7 +11,7 @@ internal static class CosmeticsLayerPatch
     private static bool CosmeticsLayer_GetColorBlindText_Prefix(CosmeticsLayer __instance, ref string __result)
     {
         // Skip processing if color ID is out of bounds (custom colors)
-        if (__instance.bodyMatProperties.ColorId > Palette.PlayerColors.Length) return true;
+        if (__instance.bodyMatProperties.ColorId >= Palette.PlayerColors.Length) return true;
 
         string colorName = Palette.GetColorName(__instance.bodyMatProperties.ColorId);
 

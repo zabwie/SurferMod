@@ -16,7 +16,7 @@ internal static class GameState
     /// <summary>
     /// Gets whether the current game mode is Normal or NormalFools.
     /// </summary>
-    internal static bool IsNormalGame => GameOptionsManager.Instance.CurrentGameOptions.GameMode is GameModes.Normal or GameModes.NormalFools;
+    internal static bool IsNormalGame => GameOptionsManager.Instance?.CurrentGameOptions?.GameMode is GameModes.Normal or GameModes.NormalFools;
 
     /// <summary>
     /// Gets whether the current game mode is HideNSeek or SeekFools.
@@ -26,37 +26,37 @@ internal static class GameState
     /// <summary>
     /// Gets whether the Skeld map is currently active.
     /// </summary>
-    internal static bool SkeldIsActive => (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Skeld;
+    internal static bool SkeldIsActive => GameOptionsManager.Instance?.CurrentGameOptions != null && (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Skeld;
 
     /// <summary>
     /// Gets whether the MiraHQ map is currently active.
     /// </summary>
-    internal static bool MiraHQIsActive => (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.MiraHQ;
+    internal static bool MiraHQIsActive => GameOptionsManager.Instance?.CurrentGameOptions != null && (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.MiraHQ;
 
     /// <summary>
     /// Gets whether the Polus map is currently active.
     /// </summary>
-    internal static bool PolusIsActive => (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Polus;
+    internal static bool PolusIsActive => GameOptionsManager.Instance?.CurrentGameOptions != null && (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Polus;
 
     /// <summary>
     /// Gets whether the Dleks map is currently active.
     /// </summary>
-    internal static bool DleksIsActive => (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Dleks;
+    internal static bool DleksIsActive => GameOptionsManager.Instance?.CurrentGameOptions != null && (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Dleks;
 
     /// <summary>
     /// Gets whether the Airship map is currently active.
     /// </summary>
-    internal static bool AirshipIsActive => (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Airship;
+    internal static bool AirshipIsActive => GameOptionsManager.Instance?.CurrentGameOptions != null && (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Airship;
 
     /// <summary>
     /// Gets whether the Fungle map is currently active.
     /// </summary>
-    internal static bool FungleIsActive => (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Fungle;
+    internal static bool FungleIsActive => GameOptionsManager.Instance?.CurrentGameOptions != null && (MapNames)GameOptionsManager.Instance.CurrentGameOptions.MapId == MapNames.Fungle;
 
     /// <summary>
     /// Gets the ID of the currently active map.
     /// </summary>
-    internal static byte GetActiveMapId => GameOptionsManager.Instance.CurrentGameOptions.MapId;
+    internal static byte GetActiveMapId => GameOptionsManager.Instance?.CurrentGameOptions?.MapId ?? 0;
 
     /// <summary>
     /// Checks whether a specific system type is currently active on the map.

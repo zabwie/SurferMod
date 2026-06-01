@@ -168,6 +168,7 @@ internal static class MiniMapBehaviourPatch
 
                 SetPosFromShip(arrowOffset, arrowIcon.transform, new Vector3(0f, 0f, VentArrowLayerOffset));
 
+                if (ShipStatus.Instance == null) return;
                 Vector3 ventMapPos = vent.transform.position / ShipStatus.Instance.MapScale;
                 ventMapPos.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
 
@@ -242,6 +243,7 @@ internal static class MiniMapBehaviourPatch
 
     private static void SetPosFromShip(Vector3 shipPos, Transform mapTransform, Vector3? offset = null)
     {
+        if (ShipStatus.Instance == null) return;
         offset ??= Vector3.zero;
         Vector3 vector = shipPos;
         vector /= ShipStatus.Instance.MapScale;

@@ -11,7 +11,7 @@ namespace Surfer.Mono;
 /// Provides enhanced ping tracking and display functionality with additional information.
 /// Extends the default Among Us ping tracker with custom features.
 /// </summary>
-internal sealed class BetterPingTracker : MonoBehaviour
+internal sealed class BetterPingTracker : SurferBehaviour
 {
     /// <summary>
     /// Gets the singleton instance of the BetterPingTracker.
@@ -91,6 +91,7 @@ internal sealed class BetterPingTracker : MonoBehaviour
 
     private void OnDestroy()
     {
+        base.OnDestroy();
         if (Instance == this)
         {
             Instance = null;

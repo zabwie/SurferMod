@@ -9,7 +9,7 @@ namespace Surfer.Network;
 /// <summary>
 /// Manages API connections to GitHub for news, updates, and user data.
 /// </summary>
-internal sealed class GithubAPI : MonoBehaviour
+internal sealed class GithubAPI : SurferBehaviour
 {
     /// <summary>
     /// Gets the singleton instance of the GithubAPI.

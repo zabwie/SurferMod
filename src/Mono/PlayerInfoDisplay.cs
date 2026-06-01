@@ -17,7 +17,7 @@ namespace Surfer.Mono;
 /// <summary>
 /// Displays extended player information during gameplay.
 /// </summary>
-internal class PlayerInfoDisplay : MonoBehaviour
+internal class PlayerInfoDisplay : SurferBehaviour
 {
     protected PlayerControl? _player;
     protected TextMeshPro? _nameText;
@@ -242,13 +242,12 @@ internal class PlayerInfoDisplay : MonoBehaviour
 
         void TryKick()
         {
-            if (GameState.IsHost && BetterGameSettings.InvalidFriendCode.GetBool())
-            {
-                string kickMessage = string.Format(Translator.GetString("AntiCheat.KickMessage"),
-                    Translator.GetString("AntiCheat.ByAntiCheat"),
-                    Translator.GetString("AntiCheat.Reason.InvalidFriendCode"));
-                _player.Kick(true, kickMessage, true);
-            }
+            if (!GameState.IsHost || !BetterGameSettings.InvalidFriendCode.GetBool()) return;
+            if (_player == null || _player.Data == null || _player.Data.IsIncomplete) return;
+            string kickMessage = string.Format(Translator.GetString("AntiCheat.KickMessage"),
+                Translator.GetString("AntiCheat.ByAntiCheat"),
+                Translator.GetString("AntiCheat.Reason.InvalidFriendCode"));
+            _player.Kick(true, kickMessage, true);
         }
 
         string friendCode = _player.Data.FriendCode;
@@ -420,6 +419,7 @@ internal class PlayerInfoDisplay : MonoBehaviour
     /// </summary>
     private void UpdateColorBlindTextPosition()
     {
+        if (_player?.cosmetics == null || _player?.MyPhysics == null) return;
         var text = _player.cosmetics.colorBlindText;
         if (!text.enabled) return;
         if (!_player.onLadder && !_player.MyPhysics.Animations.IsPlayingAnyLadderAnimation())

@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using BepInEx.Unity.IL2CPP.Utils;
 using Surfer.Attributes;
 using Surfer.Data;
 using Surfer.Data.Json;
@@ -14,7 +15,6 @@ using Surfer.Network;
 using Surfer.Patches.Gameplay.UI.Settings;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using System.Reflection;
 using UnityEngine;
 
 namespace Surfer;
@@ -188,12 +188,13 @@ internal class SurferPlugin : BasePlugin
     }
 
     /// <summary>
-    /// Registers all MonoBehaviour classes for IL2CPP injection.
+    /// Registers all MonoBehaviours for IL2CPP injection.
+    /// SurferBehaviour base class suppresses GC finalization in OnDestroy
+    /// to prevent ClassInjector.Finalize crashes on destroyed handles.
     /// </summary>
     private static void RegisterAllMonoBehavioursInAssembly()
     {
-        var assembly = Assembly.GetExecutingAssembly();
-
+        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
         var monoBehaviourTypes = assembly.GetTypes()
             .Where(type => type.IsSubclassOf(typeof(MonoBehaviour)) && !type.IsAbstract)
             .OrderBy(type => type.Name);
@@ -328,6 +329,7 @@ internal class SurferPlugin : BasePlugin
             UnlockClipboard, BypassUrlBlock, CopyLobbyCode, LowerRateLimits
         ]);
 
+        QualitySettings.vSyncCount = UnlockFPS?.Value == true ? 0 : 1;
         Application.targetFrameRate = UnlockFPS?.Value == true ? 999 : 60;
     }
 

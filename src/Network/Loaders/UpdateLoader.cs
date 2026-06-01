@@ -11,7 +11,7 @@ namespace Surfer.Network.Loaders;
 /// <summary>
 /// Handles downloading and processing of update data from a remote repository.
 /// </summary>
-internal sealed class UpdateLoader : MonoBehaviour
+internal sealed class UpdateLoader : SurferBehaviour
 {
     /// <summary>
     /// Gets the update information retrieved from the remote repository.

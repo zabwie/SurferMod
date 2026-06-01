@@ -20,6 +20,7 @@ internal static class ClientPatch
     {
         // Get supported Among Us versions for Surfer
         var varSupportedVersions = SurferPlugin.SupportedAmongUsVersions;
+        if (!varSupportedVersions.Any()) return true;
         Version currentVersion = new(SurferPlugin.AppVersion);
         Version firstSupportedVersion = new(varSupportedVersions.First());
         Version lastSupportedVersion = new(varSupportedVersions.Last());
@@ -119,6 +120,7 @@ internal static class ClientPatch
 
     private static IEnumerator CoLoadingHost()
     {
+        if (AmongUsClient.Instance == null) yield break;
         var client = AmongUsClient.Instance.GetClient(AmongUsClient.Instance.ClientId);
         var clients = AmongUsClient.Instance.allClients;
 
@@ -146,9 +148,9 @@ internal static class ClientPatch
                 loadingText = "Loading";
                 progress = 0.2f;
             }
-            else if (!ShipStatus.Instance || AmongUsClient.Instance.ShipLoadingAsyncHandle.IsValid())
+            else if (!ShipStatus.Instance || (AmongUsClient.Instance?.ShipLoadingAsyncHandle.IsValid() == true))
             {
-                bool isShipLoading = AmongUsClient.Instance.ShipLoadingAsyncHandle.IsValid();
+                bool isShipLoading = AmongUsClient.Instance?.ShipLoadingAsyncHandle.IsValid() == true;
 
                 loadingText = isShipLoading ? "Loading Ship Async" : "Spawning Ship";
                 progress = isShipLoading ? 0.3f : 0.4f;
@@ -215,9 +217,9 @@ internal static class ClientPatch
                 loadingText = "Loading";
                 progress = 0.25f;
             }
-            else if (!ShipStatus.Instance || AmongUsClient.Instance.ShipLoadingAsyncHandle.IsValid())
+            else if (!ShipStatus.Instance || (AmongUsClient.Instance?.ShipLoadingAsyncHandle.IsValid() == true))
             {
-                bool isShipLoading = AmongUsClient.Instance.ShipLoadingAsyncHandle.IsValid();
+                bool isShipLoading = AmongUsClient.Instance?.ShipLoadingAsyncHandle.IsValid() == true;
 
                 loadingText = isShipLoading ? "Loading Ship Async" : "Spawning Ship";
                 progress = isShipLoading ? 0.35f : 0.4f;

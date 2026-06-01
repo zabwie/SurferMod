@@ -53,8 +53,11 @@ internal class ZoomPatch
         if (reset)
         {
             Camera.main.orthographicSize = 3.0f;
-            HudManager.Instance.UICamera.orthographicSize = 3.0f;
-            HudManager.Instance.Chat.transform.localScale = Vector3.one;
+            if (HudManager.Instance != null)
+            {
+                HudManager.Instance.UICamera.orthographicSize = 3.0f;
+                HudManager.Instance.Chat.transform.localScale = Vector3.one;
+            }
 
             if (GameState.IsMeeting)
                 MeetingHud.Instance.transform.localScale = Vector3.one;

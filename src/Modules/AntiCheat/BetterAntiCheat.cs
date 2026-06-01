@@ -137,7 +137,8 @@ internal static class BetterAntiCheat
                 {
                     if (BetterNotificationManager.NotifyCheat(player, string.Format(Translator.GetString("AntiCheat.InvalidHostRPC"), Enum.GetName((RpcCalls)callId))))
                     {
-                        Logger_.LogCheat($"{player.BetterData().RealName} {Enum.GetName((RpcCalls)callId)}: {!player.IsHost()}");
+                        var bd = player.BetterData();
+                        Logger_.LogCheat($"{(bd != null ? bd.RealName : player.Data?.PlayerName ?? "???")} {Enum.GetName((RpcCalls)callId)}: {!player.IsHost()}");
                     }
 
                     reader.Recycle();
@@ -156,7 +157,8 @@ internal static class BetterAntiCheat
                 {
                     if (BetterNotificationManager.NotifyCheat(player, string.Format(Translator.GetString("AntiCheat.InvalidSetRPC"), Enum.GetName((RpcCalls)callId))))
                     {
-                        Logger_.LogCheat($"{player.BetterData().RealName} {Enum.GetName((RpcCalls)callId)}: {GameState.IsInGamePlay}");
+                        var bd = player.BetterData();
+                        Logger_.LogCheat($"{(bd != null ? bd.RealName : player.Data?.PlayerName ?? "???")} {Enum.GetName((RpcCalls)callId)}: {GameState.IsInGamePlay}");
                     }
 
                     reader.Recycle();
@@ -196,7 +198,8 @@ internal static class BetterAntiCheat
                 {
                     if (BetterNotificationManager.NotifyCheat(player, string.Format(Translator.GetString("AntiCheat.InvalidLobbyRPC"), Enum.GetName((RpcCalls)callId))))
                     {
-                        Logger_.LogCheat($"{player.BetterData().RealName} {Enum.GetName((RpcCalls)callId)}: {GameState.IsInGame} && {GameState.IsLobby}");
+                        var bd = player.BetterData();
+                        Logger_.LogCheat($"{(bd != null ? bd.RealName : player.Data?.PlayerName ?? "???")} {Enum.GetName((RpcCalls)callId)}: {GameState.IsInGame} && {GameState.IsLobby}");
                     }
 
                     reader.Recycle();

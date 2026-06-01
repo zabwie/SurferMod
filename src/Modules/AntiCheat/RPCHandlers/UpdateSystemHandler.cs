@@ -14,7 +14,10 @@ internal sealed class UpdateSystemHandler : RPCHandler
 
     private readonly Dictionary<uint, Func<PlayerControl?, ISystemType, MessageReader, byte, bool>> systemHandlers;
 
-    private static SabotageSystemType SabotageSystem => ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+    private static SabotageSystemType SabotageSystem => 
+        ShipStatus.Instance != null && ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Sabotage, out var sys) 
+        ? sys.Cast<SabotageSystemType>() 
+        : null;
 
     internal UpdateSystemHandler()
     {

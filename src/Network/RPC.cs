@@ -62,12 +62,14 @@ internal static class RPC
             {
                 case CustomRPC.SendSecretToPlayer:
                     {
-                        player.BetterData().HandshakeHandler.HandleSecretFromSender(reader);
+                        var bd = player.BetterData();
+                        if (bd != null) bd.HandshakeHandler.HandleSecretFromSender(reader);
                     }
                     break;
                 case CustomRPC.CheckSecretHashFromPlayer:
                     {
-                        player.BetterData().HandshakeHandler.HandleSecretHashFromPlayer(reader);
+                        var bd = player.BetterData();
+                        if (bd != null) bd.HandshakeHandler.HandleSecretHashFromPlayer(reader);
                     }
                     break;
             }
@@ -97,12 +99,14 @@ internal static class RPC
             {
                 case (byte)CustomRPC.SendSecretToPlayer:
                     {
-                        player.BetterData().HandshakeHandler.HandleSecretFromSender(reader);
+                        var bd = player.BetterData();
+                        if (bd != null) bd.HandshakeHandler.HandleSecretFromSender(reader);
                     }
                     break;
                 case (byte)CustomRPC.CheckSecretHashFromPlayer:
                     {
-                        player.BetterData().HandshakeHandler.HandleSecretHashFromPlayer(reader);
+                        var bd = player.BetterData();
+                        if (bd != null) bd.HandshakeHandler.HandleSecretHashFromPlayer(reader);
                     }
                     break;
             }

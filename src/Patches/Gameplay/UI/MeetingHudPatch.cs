@@ -25,8 +25,10 @@ internal static class MeetingHudPatch
 
         // Add host icon to meeting hud
         __instance.ProceedButton.gameObject.transform.localPosition = new(-2.5f, 2.2f, 0);
-        __instance.ProceedButton.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        __instance.ProceedButton.GetComponent<PassiveButton>().enabled = false;
+        var proceedSr = __instance.ProceedButton.gameObject.GetComponent<SpriteRenderer>();
+        if (proceedSr != null) proceedSr.enabled = false;
+        var proceedPb = __instance.ProceedButton.GetComponent<PassiveButton>();
+        if (proceedPb != null) proceedPb.enabled = false;
         __instance.HostIcon.enabled = true;
         __instance.HostIcon.gameObject.SetActive(true);
         __instance.ProceedButton.gameObject.SetActive(true);

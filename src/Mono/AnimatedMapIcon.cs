@@ -5,7 +5,7 @@ namespace Surfer.Mono;
 /// <summary>
 /// Animates a map icon by smoothly scaling it up and down when conditions are met.
 /// </summary>
-internal class AnimatedMapIcon : MonoBehaviour
+internal class AnimatedMapIcon : SurferBehaviour
 {
     /// <summary>
     /// Event that determines whether the icon should animate.
@@ -30,6 +30,7 @@ internal class AnimatedMapIcon : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        base.Awake();
         originalScale = transform.localScale;
     }
 

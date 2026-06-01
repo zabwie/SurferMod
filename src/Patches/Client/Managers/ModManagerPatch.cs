@@ -1,5 +1,6 @@
 ﻿using Surfer.Helpers;
 using Surfer.Managers;
+using Surfer.Mono;
 using Surfer.Modules.AntiCheat;
 using HarmonyLib;
 using UnityEngine;
@@ -20,6 +21,7 @@ internal static class ModManagerPatch
         }
 
         // Update various Surfer systems each frame
+        ExtendedPlayerInfo.UpdateAll();
         BetterAntiCheat.Update();
         LateTask.UpdateAll(Time.deltaTime);
         BetterNotificationManager.Update();

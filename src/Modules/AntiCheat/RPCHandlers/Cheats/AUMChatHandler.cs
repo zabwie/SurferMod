@@ -22,7 +22,9 @@ internal sealed class AUMChatHandler : RPCHandler
         var msgString = reader.ReadString();
         var colorId = reader.ReadInt32();
 
-        var flag3 = sender.BetterData().AntiCheatInfo.AUMChats.Count > 0 && sender.BetterData().AntiCheatInfo.AUMChats.Last() == msgString;
+        var betterData = sender.BetterData();
+        if (betterData == null) return;
+        var flag3 = betterData.AntiCheatInfo.AUMChats.Count > 0 && betterData.AntiCheatInfo.AUMChats.Last() == msgString;
         if (!flag3)
         {
             Utils.AddChatPrivate($"{msgString}", overrideName: $"<b><color=#870000>AUM Chat</color> - {sender.GetPlayerNameAndColor()}</b>");

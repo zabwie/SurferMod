@@ -45,7 +45,8 @@ internal static class BetterNotificationManager
             SurferNotificationManagerObj.SetActive(true);
             NameText.text = $"<color=#8A8A8A>{Translator.GetString("SystemNotification")}</color>";
             TextArea.text = text;
-            SoundManager.Instance.PlaySound(HudManager.Instance.TaskCompleteSound, false, 1f);
+            if (HudManager.Instance != null)
+                SoundManager.Instance.PlaySound(HudManager.Instance.TaskCompleteSound, false, 1f);
             Notifying = true;
         }
     }
@@ -133,12 +134,14 @@ internal static class BetterNotificationManager
                 }
             }
 
+            if (localCamera == null) return;
             SurferNotificationManagerObj.transform.position = AspectPosition.ComputeWorldPosition(localCamera, AspectPosition.EdgeAlignments.Bottom, new Vector3(-1.3f, 0.7f, localCamera.nearClipPlane + 0.1f));
 
             showTime -= Time.deltaTime;
             if (showTime <= 0f && GameState.IsInGame)
             {
-                SurferNotificationManagerObj.transform.Find("Sizer/ChatText (TMP)").GetComponent<TextMeshPro>().text = "";
+                var chatTextTransform = SurferNotificationManagerObj.transform.Find("Sizer/ChatText (TMP)");
+                if (chatTextTransform != null) chatTextTransform.GetComponent<TextMeshPro>().text = "";
                 SurferNotificationManagerObj.SetActive(false);
                 Notifying = false;
 

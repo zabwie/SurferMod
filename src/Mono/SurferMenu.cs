@@ -7,7 +7,7 @@ using Surfer.Patches.Gameplay.UI.Settings;
 
 namespace Surfer;
 
-public class SurferMenu : MonoBehaviour
+public class SurferMenu : SurferBehaviour
 {
     private Rect _windowRect;
     private bool _visible;
@@ -20,10 +20,11 @@ public class SurferMenu : MonoBehaviour
     private Vector2 _banPlayerScrollPos, _banNameScrollPos, _banWordScrollPos;
     private int _selectedTab;
     // Custom numeric input (IL2CPP-safe — TextField is stripped)
-    private bool _editingNumber;
-    private string _editBuffer = "";
-    private int _editMin, _editMax;
-    private System.Action<int>? _editCommit;
+    // Static because DrawOptionSlider is static (avoids Il2CppInterop proxying issues)
+    private static bool _editingNumber;
+    private static string _editBuffer = "";
+    private static int _editMin, _editMax;
+    private static System.Action<int>? _editCommit;
     private readonly List<(string name, System.Action draw)> _tabs = [];
 
     private static readonly Color32 PurpleOn = new(128, 0, 128, 255);
@@ -407,7 +408,7 @@ public class SurferMenu : MonoBehaviour
         GUILayout.EndHorizontal();
     }
 
-    private void DrawOptionSlider(string label, OptionIntItem? item)
+    private static void DrawOptionSlider(string label, OptionIntItem? item)
     {
         if (item == null) return;
         

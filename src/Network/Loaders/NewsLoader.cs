@@ -12,7 +12,7 @@ namespace Surfer.Network.Loaders;
 /// <summary>
 /// Handles downloading and processing of news data from a remote repository.
 /// </summary>
-internal sealed class NewsLoader : MonoBehaviour
+internal sealed class NewsLoader : SurferBehaviour
 {
     /// <summary>
     /// Coroutine to fetch the news data from the remote repository.

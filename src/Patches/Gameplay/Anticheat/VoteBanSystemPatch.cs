@@ -31,7 +31,8 @@ internal static class VoteBanSystemPatch
         if (client == null) return false;
 
         // Allow host to vote without restrictions
-        if (client.Id == AmongUsClient.Instance.GetHost().Id)
+        var host = AmongUsClient.Instance?.GetHost();
+        if (host != null && client.Id == host.Id)
         {
             return true;
         }

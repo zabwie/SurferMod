@@ -1,17 +1,21 @@
 ﻿using BepInEx.Unity.IL2CPP.Utils;
-using Surfer.Modules;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Attributes;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Surfer.Mono;
 
 /// <summary>
 /// Extends PlayerControl with additional functionality.
+/// Plain C# class — NOT a MonoBehaviour, NOT registered with ClassInjector.
+/// Instances stored in static dictionary to avoid IL2CPP finalizer crashes.
 /// </summary>
-internal sealed class ExtendedPlayerControl : MonoBehaviour, IMonoExtension<PlayerControl>
+internal sealed class ExtendedPlayerControl
 {
+    internal static readonly Dictionary<PlayerControl, ExtendedPlayerControl> _instances = [];
+
     /// <summary>
     /// Gets or sets the base PlayerControl instance.
     /// </summary>
@@ -22,50 +26,22 @@ internal sealed class ExtendedPlayerControl : MonoBehaviour, IMonoExtension<Play
     /// </summary>
     internal PlayerControl? _Player => BaseMono;
 
-    private void Awake()
-    {
-        if (!this.RegisterExtension()) return;
-        this.StartCoroutine(CoAddBetterData());
-        _Player.gameObject.AddComponent<PlayerInfoDisplay>().Init(_Player);
-    }
-
-    /// <summary>
-    /// Coroutine to add extended player data.
-    /// </summary>
-    /// <returns>IEnumerator for coroutine.</returns>
-    [HideFromIl2Cpp]
-    private IEnumerator CoAddBetterData()
-    {
-        while (_Player?.Data == null)
-        {
-            yield return null;
-        }
-
-        TryCreateExtendedData(_Player.Data);
-    }
-
-    /// <summary>
-    /// Attempts to create extended data for a player.
-    /// </summary>
-    /// <param name="data">The player data to extend.</param>
-    internal static void TryCreateExtendedData(NetworkedPlayerInfo data)
-    {
-        if (data.BetterData() == null)
-        {
-            ExtendedPlayerInfo newBetterData = data.gameObject.AddComponent<ExtendedPlayerInfo>();
-            newBetterData.SetInfo(data);
-        }
-    }
-
-    private void OnDestroy()
-    {
-        this.UnregisterExtension();
-    }
-
     /// <summary>
     /// Dictionary storing last name set for each player.
     /// </summary>
     internal readonly Dictionary<NetworkedPlayerInfo, string> NameSetLastFor = [];
+
+    /// <summary>
+    /// Attempts to create extended data for a player.
+    /// Creates a plain C# ExtendedPlayerInfo — no MonoBehaviour, no AddComponent.
+    /// </summary>
+    /// <param name="data">The player data to extend.</param>
+    internal static void TryCreateExtendedData(NetworkedPlayerInfo data)
+    {
+        if (data.BetterData() != null) return;
+        var epi = new ExtendedPlayerInfo();
+        epi.SetInfo(data);
+    }
 }
 
 /// <summary>
@@ -74,7 +50,7 @@ internal sealed class ExtendedPlayerControl : MonoBehaviour, IMonoExtension<Play
 internal static class PlayerControlExtension
 {
     [HarmonyPatch(typeof(PlayerControl))]
-    class PlayerControlPatch
+    private class PlayerControlPatch
     {
         [HarmonyPatch(nameof(PlayerControl.Awake))]
         [HarmonyPrefix]
@@ -83,16 +59,35 @@ internal static class PlayerControlExtension
             TryCreateExtendedPlayerControl(__instance);
         }
 
-        /// <summary>
-        /// Creates extended player control if it doesn't exist.
-        /// </summary>
-        /// <param name="pc">The PlayerControl instance.</param>
+        [HarmonyPatch(nameof(PlayerControl.OnDestroy))]
+        [HarmonyPrefix]
+        internal static void OnDestroy_Prefix(PlayerControl __instance)
+        {
+            ExtendedPlayerControl._instances.Remove(__instance);
+        }
+
         internal static void TryCreateExtendedPlayerControl(PlayerControl pc)
         {
-            if (pc.BetterPlayerControl() == null)
+            if (pc.BetterPlayerControl() != null) return;
+
+            var epc = new ExtendedPlayerControl { BaseMono = pc };
+            ExtendedPlayerControl._instances[pc] = epc;
+
+            // Create PlayerInfoDisplay (was in old Awake)
+            pc.gameObject.AddComponent<PlayerInfoDisplay>().Init(pc);
+
+            // Schedule BetterData creation after player data loads
+            pc.StartCoroutine(CoAddBetterData(pc));
+        }
+
+        [HideFromIl2Cpp]
+        private static IEnumerator CoAddBetterData(PlayerControl pc)
+        {
+            while (pc?.Data == null)
             {
-                ExtendedPlayerControl newExtendedPc = pc.gameObject.AddComponent<ExtendedPlayerControl>();
+                yield return null;
             }
+            ExtendedPlayerControl.TryCreateExtendedData(pc.Data);
         }
     }
 
@@ -103,7 +98,9 @@ internal static class PlayerControlExtension
     /// <returns>The ExtendedPlayerControl, or null if not found.</returns>
     internal static ExtendedPlayerControl? BetterPlayerControl(this PlayerControl player)
     {
-        return MonoExtensionManager.Get<ExtendedPlayerControl>(player);
+        if (player == null) return null;
+        ExtendedPlayerControl._instances.TryGetValue(player, out var epc);
+        return epc;
     }
 
     /// <summary>
@@ -113,6 +110,6 @@ internal static class PlayerControlExtension
     /// <returns>The ExtendedPlayerControl, or null if not found.</returns>
     internal static ExtendedPlayerControl? BetterPlayerControl(this PlayerPhysics playerPhysics)
     {
-        return MonoExtensionManager.Get<ExtendedPlayerControl>(playerPhysics.myPlayer);
+        return playerPhysics?.myPlayer?.BetterPlayerControl();
     }
 }

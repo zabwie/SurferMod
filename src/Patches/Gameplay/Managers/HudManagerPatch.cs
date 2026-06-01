@@ -43,7 +43,9 @@ internal static class HudManagerPatch
                 GameObject.Find($"{SurferNotification.name}/Sizer/NameText").transform.localPosition = new Vector3(-3.3192f, -0.0105f);
 
                 // Cache TextMeshPro component for text updates
-                BetterNotificationManager.NameText = GameObject.Find($"{SurferNotification.name}/Sizer/NameText").GetComponent<TextMeshPro>();
+                var nameTextObj = GameObject.Find($"{SurferNotification.name}/Sizer/NameText");
+                if (nameTextObj != null)
+                    BetterNotificationManager.NameText = nameTextObj.GetComponent<TextMeshPro>();
                 UnityEngine.Object.DontDestroyOnLoad(SurferNotification);
                 BetterNotificationManager.SurferNotificationManagerObj = SurferNotification;
                 SurferNotification.SetActive(false);

@@ -64,17 +64,31 @@ internal sealed class MeetingInfoDisplay : PlayerInfoDisplay
         _infoPos = _infoText.transform.localPosition;
         _TopPos = _topText.transform.localPosition;
 
+        // Set fixed positions — no dynamic repositioning to prevent flicker
+        _nameText.transform.localPosition = _namePos + new Vector3(0f, -0.1f, 0f);
+        _infoText.transform.localPosition = _infoPos + new Vector3(0f, -0.1f, 0f);
+        _topText.transform.localPosition = _TopPos + new Vector3(0f, -0.1f, 0f);
+
         var PlayerLevel = pva.transform.Find("PlayerLevel");
         PlayerLevel.localPosition = new Vector3(PlayerLevel.localPosition.x, PlayerLevel.localPosition.y, -2f);
         var LevelDisplay = Instantiate(PlayerLevel, pva.transform);
         LevelDisplay.transform.SetSiblingIndex(pva.transform.Find("PlayerLevel").GetSiblingIndex() + 1);
         LevelDisplay.gameObject.name = "PlayerId";
-        LevelDisplay.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 1f, 1f);
+        var levelSr = LevelDisplay.GetComponent<SpriteRenderer>();
+        if (levelSr != null) levelSr.color = new Color(1f, 0f, 1f, 1f);
         var IdLabel = LevelDisplay.transform.Find("LevelLabel");
         var IdNumber = LevelDisplay.transform.Find("LevelNumber");
-        IdLabel.gameObject.DestroyTextTranslators();
-        IdLabel.GetComponent<TextMeshPro>().text = "ID";
-        IdNumber.GetComponent<TextMeshPro>().text = pva.TargetPlayerId.ToString();
+        if (IdLabel != null)
+        {
+            IdLabel.gameObject.DestroyTextTranslators();
+            var idLabelTmp = IdLabel.GetComponent<TextMeshPro>();
+            if (idLabelTmp != null) idLabelTmp.text = "ID";
+        }
+        if (IdNumber != null)
+        {
+            var idNumberTmp = IdNumber.GetComponent<TextMeshPro>();
+            if (idNumberTmp != null) idNumberTmp.text = pva.TargetPlayerId.ToString();
+        }
         IdLabel.name = "IdLabel";
         IdNumber.name = "IdNumber";
         PlayerLevel.transform.position += new Vector3(0.23f, 0f);
@@ -102,7 +116,6 @@ internal sealed class MeetingInfoDisplay : PlayerInfoDisplay
             UpdateDisconnect();
         }
 
-        UpdateTextPositions();
         _pva.ColorBlindName.transform.localPosition = new Vector3(-0.91f, -0.19f, -0.05f);
 
         _lastUpdateFrame = Time.frameCount;
@@ -147,7 +160,6 @@ internal sealed class MeetingInfoDisplay : PlayerInfoDisplay
         FormatPlayerInfo(_sbTag, _sbInfo);
 
         string roleText = GetRoleText();
-        UpdateNameTextPosition(roleText, _sbInfo.ToString());
 
         UpdateTextIfChanged(_infoText, _sbInfo.ToString(), ref _lastInfoText);
         UpdateTextIfChanged(_topText, roleText, ref _lastTopText);
@@ -301,10 +313,10 @@ internal sealed class MeetingInfoDisplay : PlayerInfoDisplay
             _lastTopText = string.Empty;
         }
 
-        _pva.transform.Find("votePlayerBase")?.gameObject.SetActive(false);
-        _pva.transform.Find("deadX_border")?.gameObject.SetActive(false);
-        _pva.ClearForResults();
-        _pva.SetDisabled();
+        _pva?.transform.Find("votePlayerBase")?.gameObject?.SetActive(false);
+        _pva?.transform.Find("deadX_border")?.gameObject?.SetActive(false);
+        _pva?.ClearForResults();
+        _pva?.SetDisabled();
     }
 
     /// <summary>
@@ -313,7 +325,7 @@ internal sealed class MeetingInfoDisplay : PlayerInfoDisplay
     /// <returns>Disconnect reason text.</returns>
     private string GetDisconnectText()
     {
-        var playerData = GameData.Instance.GetPlayerById(_pva.TargetPlayerId);
+        var playerData = GameData.Instance?.GetPlayerById(_pva.TargetPlayerId);
         var betterData = playerData?.BetterData();
 
         return betterData?.DisconnectReason switch

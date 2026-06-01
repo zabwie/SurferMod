@@ -155,10 +155,10 @@ internal static class PlayerJoinAndLeftPatch
                     ReasonText = string.Format(Translator.GetString("DisconnectReason.Disconnect"), playerName);
                     break;
                 case DisconnectReasons.Kicked:
-                    ReasonText = string.Format(Translator.GetString("DisconnectReason.Kicked"), playerName, AmongUsClient.Instance.GetHost().Character.Data.PlayerName);
+                    ReasonText = string.Format(Translator.GetString("DisconnectReason.Kicked"), playerName, AmongUsClient.Instance?.GetHost()?.Character?.Data?.PlayerName ?? "???");
                     break;
                 case DisconnectReasons.Banned:
-                    ReasonText = string.Format(Translator.GetString("DisconnectReason.Banned"), playerName, AmongUsClient.Instance.GetHost().Character.Data.PlayerName);
+                    ReasonText = string.Format(Translator.GetString("DisconnectReason.Banned"), playerName, AmongUsClient.Instance?.GetHost()?.Character?.Data?.PlayerName ?? "???");
                     break;
                 case DisconnectReasons.Hacking:
                     ReasonText = string.Format(Translator.GetString("DisconnectReason.Cheater"), playerName);

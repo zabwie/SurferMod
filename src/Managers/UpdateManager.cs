@@ -13,7 +13,7 @@ namespace Surfer.Managers;
 /// <summary>
 /// Manages update functionality for Surfer, including download and installation.
 /// </summary>
-internal sealed class UpdateManager : MonoBehaviour
+internal sealed class UpdateManager : SurferBehaviour
 {
     private bool AmUpdateing;
 

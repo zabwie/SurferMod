@@ -30,14 +30,17 @@ internal static class PrivateLobbyPatch
         buttons.Clear();
 
         // Clone April Fools toggle as template for private lobby toggle
+        if (!__instance.contentObjects.Any()) return;
         toggle = UnityEngine.Object.Instantiate(__instance.AprilFoolsToggle, __instance.contentObjects.First().transform.parent);
         if (toggle != null)
         {
             toggle.name = "PrivateOnlyLobby";
 
             // Get the ON and OFF buttons from the toggle
-            buttons.Add(toggle.transform.Find("AprilOn").GetComponent<PassiveButton>());
-            buttons.Add(toggle.transform.Find("AprilOff").GetComponent<PassiveButton>());
+            var aprilOn = toggle.transform.Find("AprilOn");
+            if (aprilOn != null) buttons.Add(aprilOn.GetComponent<PassiveButton>());
+            var aprilOff = toggle.transform.Find("AprilOff");
+            if (aprilOff != null) buttons.Add(aprilOff.GetComponent<PassiveButton>());
             if (buttons.Count < 2) return;
 
             toggle.gameObject.SetActive(true);
@@ -126,9 +129,13 @@ internal static class PrivateLobbyPatch
                 button.enabled = false;
 
                 // Change inactive sprite to cyan color to indicate locked state
-                var sprite = __instance.HostPrivateButton.transform.Find("Inactive").GetComponent<SpriteRenderer>();
-                if (sprite != null)
-                    sprite.color = new Color(0.35f, 1, 1, 1);
+                var inactiveTransform = __instance.HostPrivateButton.transform.Find("Inactive");
+                if (inactiveTransform != null)
+                {
+                    var sprite = inactiveTransform.GetComponent<SpriteRenderer>();
+                    if (sprite != null)
+                        sprite.color = new Color(0.35f, 1, 1, 1);
+                }
             }
         }
     }

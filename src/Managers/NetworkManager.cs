@@ -63,7 +63,7 @@ internal static class NetworkManager
     /// <param name="sendOption">The send option for the messages.</param>
     internal static void StreamlineMessage(MessageWriter writer, SendOption sendOption)
     {
-        if (!InnerNetClient.InOnlineScene)
+        if (InnerNetClient == null || !InnerNetClient.InOnlineScene)
         {
             return;
         }
@@ -476,8 +476,10 @@ internal static class NetworkManager
     {
         internal static bool Prefix([HarmonyArgument(0)] SystemTypes systemType, [HarmonyArgument(1)] PlayerControl player, [HarmonyArgument(2)] MessageReader reader)
         {
-            player.BetterData().AntiCheatInfo.RPCSentPS++;
-            if (player.BetterData().AntiCheatInfo.RPCSentPS >= ExtendedAntiCheatInfo.MAX_RPC_SENT)
+            var bd = player.BetterData();
+            if (bd == null) return true;
+            bd.AntiCheatInfo.RPCSentPS++;
+            if (bd.AntiCheatInfo.RPCSentPS >= ExtendedAntiCheatInfo.MAX_RPC_SENT)
             {
                 return false;
             }

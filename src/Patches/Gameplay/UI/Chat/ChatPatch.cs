@@ -134,6 +134,7 @@ internal static class ChatPatch
     private static void ChatController_SetChatBubbleName_Postfix(ChatController __instance, ChatBubble bubble, NetworkedPlayerInfo playerInfo, bool isDead, bool didVote)
     {
         if (didVote) return;
+        if (bubble == null || playerInfo == null || PlayerControl.LocalPlayer == null) return;
 
         StringBuilder sbTag = new();
         StringBuilder sbInfo = new();
@@ -141,7 +142,7 @@ internal static class ChatPatch
         var sourcePlayer = playerInfo.Object;
         string hashPuid = Utils.GetHashPuid(sourcePlayer);
         string friendCode = playerInfo.FriendCode;
-        string playerName = playerInfo.BetterData()?.RealName ?? "???";
+        string playerName = playerInfo.BetterData()?.RealName ?? playerInfo.PlayerName;
 
         // Format role display with team color
         string Role = $"<size=75%><color={sourcePlayer.GetTeamHexColor()}>{sourcePlayer.GetRoleName()}</color></size>+++";
@@ -231,8 +232,10 @@ internal static class ChatPatch
             chat.quickChatField.text.color = Color.white;
 
             // Icons
-            chat.quickChatButton.transform.Find("QuickChatIcon").GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
-            chat.openKeyboardButton.transform.Find("OpenKeyboardIcon").GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
+            var quickChatIcon = chat.quickChatButton.transform.Find("QuickChatIcon");
+            if (quickChatIcon != null) quickChatIcon.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
+            var openKeyboardIcon = chat.openKeyboardButton.transform.Find("OpenKeyboardIcon");
+            if (openKeyboardIcon != null) openKeyboardIcon.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1f);
         }
         else
         {
@@ -241,8 +244,10 @@ internal static class ChatPatch
             chat.quickChatField.text.color = Color.black;
 
             // Icons
-            chat.quickChatButton.transform.Find("QuickChatIcon").GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
-            chat.openKeyboardButton.transform.Find("OpenKeyboardIcon").GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+            var quickChatIcon = chat.quickChatButton.transform.Find("QuickChatIcon");
+            if (quickChatIcon != null) quickChatIcon.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+            var openKeyboardIcon = chat.openKeyboardButton.transform.Find("OpenKeyboardIcon");
+            if (openKeyboardIcon != null) openKeyboardIcon.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
         }
 
         // Apply theme to all existing chat bubbles
@@ -259,29 +264,35 @@ internal static class ChatPatch
 
         if (SurferPlugin.ChatDarkMode.Value)
         {
-            chatBubble.transform.Find("ChatText (TMP)").GetComponentInChildren<TextMeshPro>(true).color = new Color(1f, 1f, 1f, 1f);
-            chatBubble.transform.Find("Background").GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 1f);
+            var chatText = chatBubble.transform.Find("ChatText (TMP)");
+            if (chatText != null) chatText.GetComponentInChildren<TextMeshPro>(true).color = new Color(1f, 1f, 1f, 1f);
+            var background = chatBubble.transform.Find("Background");
+            if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 1f);
 
             // Make dead player chat bubbles more transparent
-            if (chatBubble.transform.Find("PoolablePlayer/xMark") != null)
+            var xMark = chatBubble.transform.Find("PoolablePlayer/xMark");
+            if (xMark != null)
             {
-                if (chatBubble.transform.Find("PoolablePlayer/xMark").GetComponentInChildren<SpriteRenderer>(true).enabled == true)
+                if (xMark.GetComponentInChildren<SpriteRenderer>(true).enabled == true)
                 {
-                    chatBubble.transform.Find("Background").GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 0.5f);
+                    if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 0.5f);
                 }
             }
         }
         else
         {
-            chatBubble.transform.Find("ChatText (TMP)").GetComponentInChildren<TextMeshPro>(true).color = new Color(0f, 0f, 0f, 1f);
-            chatBubble.transform.Find("Background").GetComponentInChildren<SpriteRenderer>(true).color = new Color(1f, 1f, 1f, 1f);
+            var chatText = chatBubble.transform.Find("ChatText (TMP)");
+            if (chatText != null) chatText.GetComponentInChildren<TextMeshPro>(true).color = new Color(0f, 0f, 0f, 1f);
+            var background = chatBubble.transform.Find("Background");
+            if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(1f, 1f, 1f, 1f);
 
             // Make dead player chat bubbles more transparent
-            if (chatBubble.transform.Find("PoolablePlayer/xMark") != null)
+            var xMark = chatBubble.transform.Find("PoolablePlayer/xMark");
+            if (xMark != null)
             {
-                if (chatBubble.transform.Find("PoolablePlayer/xMark").GetComponentInChildren<SpriteRenderer>(true).enabled == true)
+                if (xMark.GetComponentInChildren<SpriteRenderer>(true).enabled == true)
                 {
-                    chatBubble.transform.Find("Background").GetComponentInChildren<SpriteRenderer>(true).color = new Color(1f, 1f, 1f, 0.5f);
+                    if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(1f, 1f, 1f, 0.5f);
                 }
             }
         }
