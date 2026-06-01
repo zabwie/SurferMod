@@ -1,0 +1,145 @@
+﻿using AmongUs.Data;
+
+namespace Surfer.Data.Json;
+
+/// <summary>
+/// Represents outfit data including hat, pet, skin, visor, and nameplate information.
+/// </summary>
+[Serializable]
+internal sealed class OutfitData
+{
+    /// <summary>
+    /// The ID of the hat.
+    /// </summary>
+    public string HatId = HatData.EmptyId;
+
+    /// <summary>
+    /// The ID of the pet.
+    /// </summary>
+    public string PetId = PetData.EmptyId;
+
+    /// <summary>
+    /// The ID of the skin.
+    /// </summary>
+    public string SkinId = SkinData.EmptyId;
+
+    /// <summary>
+    /// The ID of the visor.
+    /// </summary>
+    public string VisorId = VisorData.EmptyId;
+
+    /// <summary>
+    /// The ID of the nameplate.
+    /// </summary>
+    public string NamePlateId = NamePlateData.EmptyId;
+
+    /// <summary>
+    /// Gets the outfit data for the currently selected preset.
+    /// </summary>
+    /// <returns>The outfit data for the current preset.</returns>
+    internal static OutfitData GetOutfitData() => BetterDataManager.BetterDataFile.OutfitData.ElementAt(BetterDataManager.BetterDataFile.SelectedOutfitPreset);
+
+    /// <summary>
+    /// Gets the outfit data for a specific preset index.
+    /// </summary>
+    /// <param name="index">The index of the preset to retrieve.</param>
+    /// <returns>The outfit data for the specified preset.</returns>
+    internal static OutfitData GetOutfitData(int index) => BetterDataManager.BetterDataFile.OutfitData.ElementAt(index);
+
+    private static bool ignoreChange;
+
+    /// <summary>
+    /// Initializes the outfit data system and sets up change listeners.
+    /// </summary>
+    internal static void Initialize()
+    {
+        FindPreset();
+
+        var Save = () =>
+        {
+            if (ignoreChange) return;
+            GetOutfitData().SetFromData();
+            BetterDataManager.BetterDataFile.Save();
+        };
+
+        DataManager.Player.Customization.OnHatChanged += Save;
+        DataManager.Player.Customization.OnPetChanged += Save;
+        DataManager.Player.Customization.OnSkinChanged += Save;
+        DataManager.Player.Customization.OnVisorChanged += Save;
+        DataManager.Player.Customization.OnNamePlateChanged += Save;
+        Save.Invoke();
+    }
+
+    /// <summary>
+    /// Finds the preset that matches the current player customization and sets it as selected.
+    /// </summary>
+    internal static void FindPreset()
+    {
+        var collection = BetterDataManager.BetterDataFile.OutfitData;
+        int i = 0;
+        foreach (var data in collection)
+        {
+            if (data.HatId == DataManager.Player.Customization.Hat &&
+                data.PetId == DataManager.Player.Customization.Pet &&
+                data.SkinId == DataManager.Player.Customization.Skin &&
+                data.VisorId == DataManager.Player.Customization.Visor &&
+                data.NamePlateId == DataManager.Player.Customization.NamePlate)
+            {
+                BetterDataManager.BetterDataFile.SelectedOutfitPreset = i;
+                return;
+            }
+            i++;
+        }
+
+        BetterDataManager.BetterDataFile.SelectedOutfitPreset = 0;
+    }
+
+    /// <summary>
+    /// Validates the outfit data by ensuring all IDs correspond to unlocked items.
+    /// </summary>
+    private void Validate()
+    {
+        if (!HatManager.Instance.GetUnlockedHats().Any(item => item.ProductId == HatId))
+            HatId = HatData.EmptyId;
+        if (!HatManager.Instance.GetUnlockedPets().Any(item => item.ProductId == PetId))
+            PetId = PetData.EmptyId;
+        if (!HatManager.Instance.GetUnlockedSkins().Any(item => item.ProductId == SkinId))
+            SkinId = SkinData.EmptyId;
+        if (!HatManager.Instance.GetUnlockedVisors().Any(item => item.ProductId == VisorId))
+            VisorId = VisorData.EmptyId;
+        if (!HatManager.Instance.GetUnlockedNamePlates().Any(item => item.ProductId == NamePlateId))
+            NamePlateId = NamePlateData.EmptyId;
+    }
+
+    /// <summary>
+    /// Loads the outfit data into the player's customization and invokes a callback.
+    /// </summary>
+    /// <param name="callback">The callback to invoke after loading the outfit.</param>
+    internal void Load(Action callback)
+    {
+        Validate();
+
+        ignoreChange = true;
+        DataManager.Player.Customization.Hat = HatId;
+        DataManager.Player.Customization.Pet = PetId;
+        DataManager.Player.Customization.Skin = SkinId;
+        DataManager.Player.Customization.Visor = VisorId;
+        DataManager.Player.Customization.NamePlate = NamePlateId;
+        ignoreChange = false;
+
+        callback.Invoke();
+        BetterDataManager.BetterDataFile.Save();
+    }
+
+    /// <summary>
+    /// Updates the outfit data with the current player customization values.
+    /// </summary>
+    internal void SetFromData()
+    {
+        HatId = DataManager.Player.Customization.Hat;
+        PetId = DataManager.Player.Customization.Pet;
+        SkinId = DataManager.Player.Customization.Skin;
+        VisorId = DataManager.Player.Customization.Visor;
+        NamePlateId = DataManager.Player.Customization.NamePlate;
+    }
+}

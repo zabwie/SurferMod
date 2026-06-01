@@ -1,0 +1,107 @@
+﻿using Surfer.Structs;
+using System.Text.Json.Serialization;
+
+namespace Surfer.Data.Json;
+
+/// <summary>
+/// Represents the main data file for Surfer, containing outfit presets and cheat detection data.
+/// </summary>
+internal sealed class BetterDataFile : AbstractJsonFile
+{
+    /// <summary>
+    /// Gets the file path for the Surfer data file.
+    /// </summary>
+    internal override string FilePath => BetterDataManager.dataPath;
+
+    /// <summary>
+    /// Loads the data file and performs post-load processing.
+    /// </summary>
+    /// <returns>True if loading was successful, false otherwise.</returns>
+    protected override bool Load()
+    {
+        var success = base.Load();
+        if (success)
+        {
+            SelectedOutfitPreset = Math.Clamp(SelectedOutfitPreset, 0, 5);
+            AllCheatData = [.. CheatData, .. SickoData, .. AUMData, .. KNData];
+        }
+        return success;
+    }
+
+    /// <summary>
+    /// Saves the data file, updating the combined cheat data before saving.
+    /// </summary>
+    /// <returns>True if saving was successful, false otherwise.</returns>
+    internal override bool Save()
+    {
+        AllCheatData = [.. CheatData, .. SickoData, .. AUMData, .. KNData];
+        return base.Save();
+    }
+
+    /// <summary>
+    /// Checks if player data matches any known cheat entries.
+    /// </summary>
+    /// <param name="data">The player information to check.</param>
+    /// <returns>True if the player matches a cheat entry, false otherwise.</returns>
+    internal bool CheckPlayerData(NetworkedPlayerInfo data) => CheckPlayerDataWithReason(data).check;
+
+    /// <summary>
+    /// Checks if player data matches any known cheat entries and provides a reason if found.
+    /// </summary>
+    /// <param name="data">The player information to check.</param>
+    /// <returns>A tuple containing whether a match was found and the reason for the match.</returns>
+    internal (bool check, string reason) CheckPlayerDataWithReason(NetworkedPlayerInfo data)
+    {
+        foreach (var info in AllCheatData)
+        {
+            var (check, reason) = info.CheckPlayerDataWithReason(data);
+            if (check)
+            {
+                return (true, reason);
+            }
+        }
+
+        return (false, "");
+    }
+
+    /// <summary>
+    /// Gets or sets the combined collection of all cheat detection data.
+    /// </summary>
+    internal HashSet<UserInfo> AllCheatData { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the index of the currently selected outfit preset.
+    /// </summary>
+    [JsonPropertyName("selectedOutfitPreset")]
+    public int SelectedOutfitPreset { get; set; } = 0;
+
+    /// <summary>
+    /// Gets or sets the collection of outfit presets.
+    /// </summary>
+    [JsonPropertyName("outfitData")]
+    public HashSet<OutfitData> OutfitData { get; set; } = [new(), new(), new(), new(), new(), new()];
+
+    /// <summary>
+    /// Gets or sets the collection of known cheat user data.
+    /// </summary>
+    [JsonPropertyName("cheatData")]
+    public HashSet<UserInfo> CheatData { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of Sicko cheat user data.
+    /// </summary>
+    [JsonPropertyName("sickoData")]
+    public HashSet<UserInfo> SickoData { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of AUM cheat user data.
+    /// </summary>
+    [JsonPropertyName("aumData")]
+    public HashSet<UserInfo> AUMData { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of KN cheat user data.
+    /// </summary>
+    [JsonPropertyName("knData")]
+    public HashSet<UserInfo> KNData { get; set; } = [];
+}

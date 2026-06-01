@@ -1,0 +1,49 @@
+﻿namespace Surfer.Enums;
+
+/// <summary>
+/// Defines custom Remote Procedure Call (RPC) identifiers used in Surfer for cheat detection and communication.
+/// </summary>
+internal enum CustomRPC : int
+{
+    // Cheat RPC's
+    /// <summary>
+    /// RPC identifier for Sicko cheat detection.
+    /// </summary>
+    Sicko = 420, // Results in 164
+
+    /// <summary>
+    /// RPC identifier for AUM (Among Us Menu) cheat detection.
+    /// </summary>
+    AUM = 42069, // Results in 85
+
+    /// <summary>
+    /// RPC identifier for AUM chat communication.
+    /// </summary>
+    AUMChat = 101,
+
+    /// <summary>
+    /// RPC identifier for KillNetwork cheat detection.
+    /// </summary>
+    KillNetwork = 250,
+
+    /// <summary>
+    /// RPC identifier for KillNetwork chat communication.
+    /// </summary>
+    KillNetworkChat = 119,
+
+
+
+    // Better Among Us
+    /// <summary>
+    /// Legacy RPC for Surfer checks (currently unused).
+    /// </summary>
+    LegacyBetterCheck = 150, // Unused
+    /// <summary>
+    /// RPC for sending a shared secret to another player.
+    /// </summary>
+    SendSecretToPlayer,
+    /// <summary>
+    /// RPC for checking the hash of a shared secret received from another player.
+    /// </summary>
+    CheckSecretHashFromPlayer,
+}
