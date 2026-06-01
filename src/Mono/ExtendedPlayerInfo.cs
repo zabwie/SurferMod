@@ -89,6 +89,8 @@ internal sealed class ExtendedPlayerInfo
             var time = Time.deltaTime;
             epi.AntiCheatInfo!.TimeSinceLastTask += time;
 
+            if (epi._Data.Object.IsLocalPlayer()) continue;
+
             if (epi.AntiCheatInfo.RPCSentPS > 0)
             {
                 bool flag = epi._Data.IsCheater();

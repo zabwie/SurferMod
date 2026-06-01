@@ -27,6 +27,8 @@ internal class PlatformSpoofPatch
 
                     if (player != null && __instance?.Platform != null)
                     {
+                        if (player.IsLocalPlayer()) return;
+
                         if (__instance.Platform is Platforms.StandaloneWin10 or Platforms.Xbox)
                         {
                             if (__instance.XboxPlatformId.ToString().Length is < 10 or > 16)

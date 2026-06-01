@@ -47,8 +47,8 @@ internal static class ChatCommandsPatch
         // If not a command, handle as normal chat (with restrictions)
         if (!text.StartsWith(CommandPrefix) || IsOnCooldown)
         {
-            // Prevent chat during gameplay if not in meeting
-            if (GameState.IsInGame && !GameState.IsLobby && !GameState.IsFreePlay && !GameState.IsMeeting && !GameState.IsExilling && PlayerControl.LocalPlayer.IsAlive())
+            // Prevent chat during gameplay if not in meeting (unless ChatInGameplay is enabled)
+            if (!SurferPlugin.ChatInGameplay.Value && GameState.IsInGame && !GameState.IsLobby && !GameState.IsFreePlay && !GameState.IsMeeting && !GameState.IsExilling && PlayerControl.LocalPlayer.IsAlive())
                 return false;
 
             // Add to chat history

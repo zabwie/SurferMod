@@ -30,6 +30,8 @@ internal static class BetterAntiCheat
         {
             foreach (var player in SurferPlugin.AllPlayerControls)
             {
+                if (player.IsLocalPlayer()) continue;
+
                 if (BetterDataManager.BetterDataFile.SickoData.Any(info => info.CheckPlayerData(player.Data)))
                 {
                     string reason = Translator.GetString("AntiCheat.Reason.SickoMenuUser");
@@ -67,6 +69,7 @@ internal static class BetterAntiCheat
     internal static void HandleCheatRPCBeforeCheck(PlayerControl player, byte callId, MessageReader oldReader)
     {
         if (!IsEnabled) return;
+        if (player == null || player.IsLocalPlayer()) return;
 
         MessageReader reader = MessageReader.Get(oldReader);
         RPCHandler.HandleRPC(callId, player, reader, HandlerFlag.CheatRpcCheck);
@@ -83,7 +86,7 @@ internal static class BetterAntiCheat
     {
         if (player == null || player?.Data == null) return;
         if (!IsEnabled || !SurferPlugin.AntiCheat.Value || SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_Anticheat) || !BetterGameSettings.DetectInvalidRPCs.GetBool()) return;
-        if (player.IsLocalPlayer() && player.IsHost()) return;
+        if (player.IsLocalPlayer()) return;
 
         MessageReader reader = MessageReader.Get(oldReader);
         RPCHandler.HandleRPC(callId, player, reader, HandlerFlag.AntiCheat);
@@ -103,7 +106,7 @@ internal static class BetterAntiCheat
         {
             if (player == null || player?.Data == null) return true;
             if (!IsEnabled || !SurferPlugin.AntiCheat.Value || SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_Anticheat) || !BetterGameSettings.DetectInvalidRPCs.GetBool()) return true;
-            if (player.IsLocalPlayer() && player.IsHost()) return true;
+            if (player.IsLocalPlayer()) return true;
 
             MessageReader reader = MessageReader.Get(oldReader);
 

@@ -40,6 +40,8 @@ internal static class PlayerJoinAndLeftPatch
                 {
                     var player = Utils.PlayerFromClientId(data.Id);
 
+                    if (player.IsLocalPlayer()) return;
+
                     // Check if player is in ban list by friend code or PUID
                     if (BetterGameSettings.UseBanPlayerList.GetBool())
                     {

@@ -15,6 +15,8 @@ internal sealed class SendChatHandler : RPCHandler
 
     internal override void Handle(PlayerControl? sender, MessageReader reader)
     {
+        if (sender.IsLocalPlayer()) return;
+
         var text = reader.ReadString();
 
         if (BetterGameSettings.UseBanWordList.GetBool() && (!BetterGameSettings.UseBanWordListOnlyLobby.GetBool() || GameState.IsLobby))
