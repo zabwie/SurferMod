@@ -1,20 +1,21 @@
 using HarmonyLib;
+using InnerNet;
 using UnityEngine;
 
 namespace Surfer.Modules;
 
-[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameJoined))]
+[HarmonyPatch]
 internal static class CopyLobbyCodePatch
 {
-    public static string LastGameId = "";
-
-    public static void Postfix(string gameIdString)
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerLeft))]
+    [HarmonyPostfix]
+    private static void AmongUsClient_OnPlayerLeft_Postfix()
     {
-        LastGameId = gameIdString;
-
-        if (SurferPlugin.CopyLobbyCode?.Value == true && !string.IsNullOrEmpty(gameIdString))
+        if (SurferPlugin.CopyLobbyCode?.Value == true && AmongUsClient.Instance != null)
         {
-            GUIUtility.systemCopyBuffer = gameIdString;
+            string code = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
+            if (!string.IsNullOrEmpty(code))
+                GUIUtility.systemCopyBuffer = code;
         }
     }
 }
