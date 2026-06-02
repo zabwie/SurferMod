@@ -298,7 +298,7 @@ internal class SurferPlugin : BasePlugin
     {
         PrivateOnlyLobby = Config.Bind("Mod", "PrivateOnlyLobby", false);
         AntiCheat = Config.Bind("Better Options", "AntiCheat", true);
-        SendBetterRpc = Config.Bind("Better Options", "SendBetterRpc", true);
+        SendBetterRpc = Config.Bind("Better Options", "SendBetterRpc", false);
         BetterNotifications = Config.Bind("Better Options", "BetterNotifications", true);
         ForceOwnLanguage = Config.Bind("Better Options", "ForceOwnLanguage", false);
         ChatDarkMode = Config.Bind("Better Options", "ChatDarkMode", true);
