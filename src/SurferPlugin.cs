@@ -292,6 +292,7 @@ internal class SurferPlugin : BasePlugin
     internal static ConfigEntry<bool>? BypassUrlBlock { get; private set; }
     internal static ConfigEntry<bool>? CopyLobbyCode { get; private set; }
     internal static ConfigEntry<bool>? LowerRateLimits { get; private set; }
+    internal static ConfigEntry<bool>? MinimapIcons { get; private set; }
 
     /// <summary>
     /// Loads configuration options from BepInEx config file.
@@ -322,6 +323,7 @@ internal class SurferPlugin : BasePlugin
         BypassUrlBlock = Config.Bind("Surfer Options", "BypassUrlBlock", false);
         CopyLobbyCode = Config.Bind("Surfer Options", "CopyLobbyCode", false);
         LowerRateLimits = Config.Bind("Surfer Options", "LowerRateLimits", false);
+        MinimapIcons = Config.Bind("Better Options", "MinimapIcons", true);
 
         SurferModdedSupportEvents.InvokeAll_OnSurferConfigEntriesLoaded([
             PrivateOnlyLobby, AntiCheat, SendBetterRpc,
@@ -330,7 +332,7 @@ internal class SurferPlugin : BasePlugin
             UnlockFPS, ShowFPS, CommandPrefix,
             FavoriteColor, SettingsPreset,
             AutoKick, AutoKickThreshold, AutoBan, VanillaMode, AntiBot, LongerMessages,
-            UnlockClipboard, BypassUrlBlock, CopyLobbyCode, LowerRateLimits
+            UnlockClipboard, BypassUrlBlock, CopyLobbyCode, LowerRateLimits, MinimapIcons
         ]);
 
         QualitySettings.vSyncCount = UnlockFPS?.Value == true ? 0 : 1;

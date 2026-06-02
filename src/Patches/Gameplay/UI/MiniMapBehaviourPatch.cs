@@ -64,6 +64,7 @@ internal static class MiniMapBehaviourPatch
     private static void MapBehaviour_Show_Postfix(MapBehaviour __instance)
     {
         if (SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_MinimapIcons)) return;
+        if (SurferPlugin.MinimapIcons?.Value == false) return;
 
         foreach (var button in __instance.infectedOverlay.allButtons)
         {

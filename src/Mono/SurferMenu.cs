@@ -180,6 +180,7 @@ public class SurferMenu : SurferBehaviour
         DrawToggle("Show FPS", SurferPlugin.ShowFPS);
         DrawToggle("Force Own Language", SurferPlugin.ForceOwnLanguage);
         DrawToggle("Chat In Gameplay", SurferPlugin.ChatInGameplay);
+        DrawToggle("Minimap Icons", SurferPlugin.MinimapIcons);
 
         GUILayout.Space(8);
         GUILayout.Label("── Chat ──", SurferStyles.SectionLabel);
