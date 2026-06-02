@@ -88,6 +88,21 @@ internal static class ChatPatch
     [HarmonyPriority(Priority.First)]
     private static void ChatController_Update_Prefix(ChatController __instance)
     {
+        // Chat-In-Gameplay: force chat open on Enter during gameplay
+        if (SurferPlugin.ChatInGameplay.Value && GameState.IsInGamePlay && !GameState.IsMeeting && PlayerControl.LocalPlayer.IsAlive())
+        {
+            if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && !__instance.IsOpenOrOpening)
+            {
+                _chatToggled = true;
+                __instance.SetVisible(true);
+            }
+            if (Input.GetKeyDown(KeyCode.Escape) && __instance.IsOpenOrOpening)
+            {
+                _chatToggled = false;
+                __instance.SetVisible(false);
+            }
+        }
+
         // Apply dark/light theme to chat input field
         if (SurferPlugin.ChatDarkMode.Value)
         {
