@@ -55,7 +55,7 @@ internal static class AutoKickPatch
             uint displayLevel = rawLevel + 1;
             if (displayLevel < (uint)threshold)
             {
-                AmongUsClient.Instance.KickPlayer(player.Data.ClientId, false);
+                AmongUsClient.Instance.KickPlayer(player.Data.ClientId, SurferPlugin.AutoBan?.Value ?? false);
             }
         }
 

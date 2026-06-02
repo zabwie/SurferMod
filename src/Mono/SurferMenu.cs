@@ -233,6 +233,9 @@ public class SurferMenu : SurferBehaviour
             
             if (newVal != val && SurferPlugin.AutoKickThreshold != null)
                 SurferPlugin.AutoKickThreshold.Value = newVal;
+
+            GUILayout.Space(2);
+            DrawToggle("  Ban (instead of kick)", SurferPlugin.AutoBan);
         }
     }
 
