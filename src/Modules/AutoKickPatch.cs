@@ -12,6 +12,7 @@ internal static class AutoKickPatch
     {
         if (!SurferPlugin.AutoKick?.Value ?? true) return;
         if (!AmongUsClient.Instance.AmHost) return;
+        if (GameState.IsGameStarting) return;
 
         int threshold = SurferPlugin.AutoKickThreshold?.Value ?? 0;
         if (threshold <= 0) return;
@@ -19,7 +20,10 @@ internal static class AutoKickPatch
         if (__instance.Data?.ClientId == AmongUsClient.Instance.HostId) return;
         if (_handled.Contains(__instance.PlayerId)) return;
 
-        if (level < threshold)
+        // Among Us stores levels 0-indexed: displayed level 10 = stored level 9.
+        // Convert to display level before comparing against threshold.
+        uint displayLevel = level + 1;
+        if (displayLevel < (uint)threshold)
         {
             AmongUsClient.Instance.KickPlayer(__instance.Data.ClientId, false);
             _handled.Add(__instance.PlayerId);

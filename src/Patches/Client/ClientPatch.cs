@@ -56,6 +56,7 @@ internal static class ClientPatch
     [HarmonyPostfix]
     private static void AmongUsClient_ExitGame_Postfix([HarmonyArgument(0)] DisconnectReasons reason)
     {
+        GameState.IsGameStarting = false;
         Logger_.Log($"[CRASH-TRACE] ExitGame postfix START — reason={reason}");
         // Hide custom loading bar when exiting game
         CustomLoadingBarManager.ToggleLoadingBar(false);
@@ -67,6 +68,8 @@ internal static class ClientPatch
     [HarmonyPrefix]
     private static void AmongUsClient_OnGameEnd_Prefix()
     {
+        GameState.IsGameStarting = false;
+
         // Preserve all player GameObjects during scene transitions
         foreach (var data in GameData.Instance.AllPlayers)
         {
@@ -87,6 +90,8 @@ internal static class ClientPatch
     [HarmonyPostfix]
     private static void AmongUsClient_CoStartGame_Postfix(AmongUsClient __instance)
     {
+        GameState.IsGameStarting = true;
+
         // Clear in-game chat if chat feature is enabled
         if (SurferPlugin.ChatInGameplay.Value)
         {
@@ -116,6 +121,7 @@ internal static class ClientPatch
         CustomLoadingBarManager.SetLoadingPercent(100f, "Complete");
         yield return new WaitForSeconds(0.25f);
         CustomLoadingBarManager.ToggleLoadingBar(false);
+        GameState.IsGameStarting = false;
     }
 
     private static IEnumerator CoLoadingHost()

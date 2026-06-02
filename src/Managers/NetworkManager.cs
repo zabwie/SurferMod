@@ -44,12 +44,12 @@ internal static class NetworkManager
             if (InnerNetClient?.connection != null)
             {
                 SendErrors sendErrors = InnerNetClient.connection.Send(writer);
-                if (sendErrors != SendErrors.None && !GameState.IsFreePlay)
+                if (sendErrors != SendErrors.None && !GameState.IsFreePlay && GameState.IsInGamePlay)
                 {
                     InnerNetClient.EnqueueDisconnect(DisconnectReasons.Error, "Failed to send message: " + sendErrors.ToString());
                 }
             }
-            else
+            else if (GameState.IsInGamePlay)
             {
                 InnerNetClient?.EnqueueDisconnect(DisconnectReasons.Custom, "InnerNetClient.connection is null");
             }
@@ -448,6 +448,8 @@ internal static class NetworkManager
     /// </summary>
     private static bool PlayerRpc(PlayerControl player, byte callId, MessageReader reader)
     {
+        if (GameState.IsGameStarting || !GameState.IsInGamePlay) return true;
+
         if (player.BetterData() != null)
         {
             player.BetterData().AntiCheatInfo.RPCSentPS++;
@@ -476,6 +478,8 @@ internal static class NetworkManager
     {
         internal static bool Prefix([HarmonyArgument(0)] SystemTypes systemType, [HarmonyArgument(1)] PlayerControl player, [HarmonyArgument(2)] MessageReader reader)
         {
+            if (GameState.IsGameStarting || !GameState.IsInGamePlay) return true;
+
             var bd = player.BetterData();
             if (bd == null) return true;
             bd.AntiCheatInfo.RPCSentPS++;

@@ -109,6 +109,7 @@ internal static class BetterAntiCheat
             if (BetterDataManager.IsWhitelisted(player?.Data?.FriendCode)) return true;
             if (!IsEnabled || !SurferPlugin.AntiCheat.Value || SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_Anticheat) || !BetterGameSettings.DetectInvalidRPCs.GetBool()) return true;
             if (player.IsLocalPlayer()) return true;
+            if (GameState.IsGameStarting || !GameState.IsInGamePlay) return true;
 
             MessageReader reader = MessageReader.Get(oldReader);
 
@@ -151,7 +152,7 @@ internal static class BetterAntiCheat
                 }
             }
 
-            if (GameState.IsInGamePlay)
+            if (GameState.IsInGamePlay && !GameState.IsGameStarting)
             {
                 if (callId is (byte)RpcCalls.SetColor
                     or (byte)RpcCalls.SetHatStr
@@ -171,7 +172,7 @@ internal static class BetterAntiCheat
                 }
             }
 
-            if (GameState.IsInGame && GameState.IsLobby)
+            if (GameState.IsInGame && GameState.IsLobby && !GameState.IsGameStarting)
             {
                 if (callId is (byte)RpcCalls.StartMeeting
                     or (byte)RpcCalls.ReportDeadBody

@@ -186,4 +186,11 @@ internal static class PlayerJoinAndLeftPatch
         }
         Logger_.Log($"[CRASH-TRACE] BetterShowNotification END");
     }
+
+    [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.DisconnectInternal))]
+    [HarmonyPrefix]
+    private static void InnerNetClient_DisconnectInternal_Prefix(DisconnectReasons reason, string stringReason)
+    {
+        Logger_.Error($"[DISCONNECT] Local player disconnected — reason={reason} ({Enum.GetName(reason)}), detail=\"{stringReason}\", IsHost={GameState.IsHost}, IsGameStarting={GameState.IsGameStarting}, IsInGamePlay={GameState.IsInGamePlay}, IsLobby={GameState.IsLobby}, IsInGame={GameState.IsInGame}");
+    }
 }

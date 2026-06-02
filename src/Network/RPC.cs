@@ -115,7 +115,7 @@ internal static class RPC
         {
             try
             {
-                if (!GameState.IsHost)
+                if (!GameState.IsHost && GameState.IsInGamePlay)
                 {
                     if (player.IsHost())
                     {

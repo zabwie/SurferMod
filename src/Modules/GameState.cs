@@ -252,4 +252,12 @@ internal static class GameState
     /// Gets whether the local player is dead.
     /// </summary>
     internal static bool IsDead => PlayerControl.LocalPlayer?.Data?.IsDead is true;
+
+    /// <summary>
+    /// Gets or sets whether a game start transition is currently in progress.
+    /// Set to true when CoStartGame/FinallyBegin is called, false when ExitGame or OnGameEnd fires.
+    /// Used to prevent anti-cheat false positives during the lobby→gameplay transition window
+    /// where IsInGame is true but IsLobby is still true.
+    /// </summary>
+    internal static bool IsGameStarting { get; set; }
 }

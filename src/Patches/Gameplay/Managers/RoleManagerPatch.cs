@@ -155,16 +155,18 @@ internal static class RoleManagerPatch
                         pc.RpcSetRole(kvp.Key);
 
                         // Desync role to hide special role from non-Surfer players
-                        if (BetterGameSettings.DesyncRoles.GetBool())
+                        // Only safe on non-vanilla servers — InnerSloth anti-cheat flags conflicting SetRole RPCs
+                        if (BetterGameSettings.DesyncRoles.GetBool() && !GameState.IsVanillaServer && kvp.Key is not (RoleTypes.Phantom or RoleTypes.Viper))
                         {
-                            if (kvp.Key is not (RoleTypes.Phantom or RoleTypes.Viper))
+                            var capturedPc = pc;
+                            LateTask.Schedule(() =>
                             {
-                                AmongUsClient.Instance.SendRpcImmediatelyDesync(pc.NetId, RpcCalls.SetRole, SendOption.None, SendTo(pc), writer =>
+                                AmongUsClient.Instance.SendRpcImmediatelyDesync(capturedPc.NetId, RpcCalls.SetRole, SendOption.None, SendTo(capturedPc), writer =>
                                 {
                                     writer.Write((ushort)RoleTypes.Impostor);
                                     writer.Write(false);
                                 });
-                            }
+                            }, 3f, "DesyncImpostorRole", false);
                         }
 
                         Logger_.LogPrivate($"Assigned {kvp.Key.GetRoleName()} role to {pc.Data.PlayerName}", "RoleManager");
@@ -195,16 +197,17 @@ internal static class RoleManagerPatch
                         pc.RpcSetRole(kvp.Key);
 
                         // Desync role to hide special role from non-Surfer players
-                        if (BetterGameSettings.DesyncRoles.GetBool())
+                        if (BetterGameSettings.DesyncRoles.GetBool() && !GameState.IsVanillaServer && kvp.Key is not RoleTypes.Noisemaker)
                         {
-                            if (kvp.Key is not RoleTypes.Noisemaker)
+                            var capturedPc = pc;
+                            LateTask.Schedule(() =>
                             {
-                                AmongUsClient.Instance.SendRpcImmediatelyDesync(pc.NetId, RpcCalls.SetRole, SendOption.None, SendTo(pc), writer =>
+                                AmongUsClient.Instance.SendRpcImmediatelyDesync(capturedPc.NetId, RpcCalls.SetRole, SendOption.None, SendTo(capturedPc), writer =>
                                 {
                                     writer.Write((ushort)RoleTypes.Crewmate);
                                     writer.Write(false);
                                 });
-                            }
+                            }, 3f, "DesyncCrewmateRole", false);
                         }
 
                         Logger_.LogPrivate($"Assigned {kvp.Key.GetRoleName()} role to {pc.Data.PlayerName}", "RoleManager");
@@ -355,13 +358,18 @@ internal static class RoleManagerPatch
                 player.RpcSetRole(kvp.Key);
 
                 // Desync ghost role to hide it from non-Surfer players
-                if (BetterGameSettings.DesyncRoles.GetBool())
+                if (BetterGameSettings.DesyncRoles.GetBool() && !GameState.IsVanillaServer)
                 {
-                    AmongUsClient.Instance.SendRpcImmediatelyDesync(player.NetId, RpcCalls.SetRole, SendOption.None, SendTo(player), writer =>
+                    var capturedPlayer = player;
+                    var defaultGhostRole = player.Data.Role.DefaultGhostRole;
+                    LateTask.Schedule(() =>
                     {
-                        writer.Write((ushort)player.Data.Role.DefaultGhostRole);
-                        writer.Write(false);
-                    });
+                        AmongUsClient.Instance.SendRpcImmediatelyDesync(capturedPlayer.NetId, RpcCalls.SetRole, SendOption.None, SendTo(capturedPlayer), writer =>
+                        {
+                            writer.Write((ushort)defaultGhostRole);
+                            writer.Write(false);
+                        });
+                    }, 3f, "DesyncGhostRole", false);
                 }
 
                 return false;
