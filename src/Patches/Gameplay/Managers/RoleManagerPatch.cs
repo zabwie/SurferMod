@@ -321,6 +321,8 @@ internal static class RoleManagerPatch
     [HarmonyPrefix]
     internal static bool RoleManager_AssignRoleOnDeath_Prefix(PlayerControl player)
     {
+        if (!GameState.IsHost) return true;
+
         // Track available ghost roles
         Dictionary<RoleTypes, int> GhostRoles = new() // Role, Amount
         {
