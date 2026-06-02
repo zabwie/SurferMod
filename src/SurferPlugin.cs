@@ -285,6 +285,7 @@ internal class SurferPlugin : BasePlugin
     internal static ConfigEntry<bool>? AutoKick { get; private set; }
     internal static ConfigEntry<int>? AutoKickThreshold { get; private set; }
     internal static ConfigEntry<bool>? AutoBan { get; private set; }
+    internal static ConfigEntry<bool>? VanillaMode { get; private set; }
     internal static ConfigEntry<bool>? AntiBot { get; private set; }
     internal static ConfigEntry<bool>? LongerMessages { get; private set; }
     internal static ConfigEntry<bool>? UnlockClipboard { get; private set; }
@@ -314,6 +315,7 @@ internal class SurferPlugin : BasePlugin
         AutoKick = Config.Bind("Surfer Options", "AutoKick", false);
         AutoKickThreshold = Config.Bind("Surfer Options", "AutoKickThreshold", 0);
         AutoBan = Config.Bind("Surfer Options", "AutoBan", false);
+        VanillaMode = Config.Bind("Mod", "VanillaMode", false);
         AntiBot = Config.Bind("Surfer Options", "AntiBot", false);
         LongerMessages = Config.Bind("Surfer Options", "LongerMessages", false);
         UnlockClipboard = Config.Bind("Surfer Options", "UnlockClipboard", false);
@@ -327,7 +329,7 @@ internal class SurferPlugin : BasePlugin
             ChatInGameplay, LobbyPlayerInfo, DisableLobbyTheme,
             UnlockFPS, ShowFPS, CommandPrefix,
             FavoriteColor, SettingsPreset,
-            AutoKick, AutoKickThreshold, AutoBan, AntiBot, LongerMessages,
+            AutoKick, AutoKickThreshold, AutoBan, VanillaMode, AntiBot, LongerMessages,
             UnlockClipboard, BypassUrlBlock, CopyLobbyCode, LowerRateLimits
         ]);
 

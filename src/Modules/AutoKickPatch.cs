@@ -17,6 +17,7 @@ internal static class AutoKickPatch
     private static void HudManager_Update_Postfix()
     {
         if (!SurferPlugin.AutoKick?.Value ?? true) return;
+        if (SurferPlugin.VanillaMode?.Value == true) return;
         if (!AmongUsClient.Instance.AmHost) return;
         if (!GameState.IsLobby)
         {

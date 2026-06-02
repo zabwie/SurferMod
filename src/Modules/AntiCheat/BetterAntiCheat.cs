@@ -107,6 +107,7 @@ internal static class BetterAntiCheat
         {
             if (player == null || player?.Data == null) return true;
             if (BetterDataManager.IsWhitelisted(player?.Data?.FriendCode)) return true;
+            if (SurferPlugin.VanillaMode?.Value == true) return true;
             if (!IsEnabled || !SurferPlugin.AntiCheat.Value || SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_Anticheat) || !BetterGameSettings.DetectInvalidRPCs.GetBool()) return true;
             if (player.IsLocalPlayer()) return true;
             if (GameState.IsGameStarting || !GameState.IsInGamePlay) return true;

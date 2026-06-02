@@ -162,6 +162,15 @@ public class SurferMenu : SurferBehaviour
 
     private void DrawGeneralTab()
     {
+        GUILayout.Label("── Vanilla Mode ──", SurferStyles.SectionLabel);
+        DrawToggle("Disable All Surfer Features", SurferPlugin.VanillaMode);
+        if (SurferPlugin.VanillaMode?.Value == true)
+        {
+            GUILayout.Label("All mod features disabled — vanilla Among Us.", SurferStyles.AlignedLabel);
+            return;
+        }
+
+        GUILayout.Space(8);
         GUILayout.Label("── Visual ──", SurferStyles.SectionLabel);
         DrawToggle("Chat Dark Mode", SurferPlugin.ChatDarkMode);
         DrawToggle("Disable Lobby Theme", SurferPlugin.DisableLobbyTheme);
