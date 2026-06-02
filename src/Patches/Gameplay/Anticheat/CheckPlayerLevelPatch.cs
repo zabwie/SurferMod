@@ -5,7 +5,7 @@ using HarmonyLib;
 
 namespace Surfer.Patches.Gameplay.Anticheat;
 
-[HarmonyPatch]
+// [HarmonyPatch] — Disabled: duplicate of AutoKickPatch in Host tab
 internal class CheckPlayerLevelPatch
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -14,7 +14,8 @@ internal class CheckPlayerLevelPatch
     {
         if (GameState.IsHost)
         {
-            if (!__instance.IsLocalPlayer() && (__instance.Data.PlayerLevel < BetterGameSettings.KickLevelBelow.GetInt()))
+            if (__instance.IsLocalPlayer() || __instance.Data == null || __instance.Data.IsIncomplete) return;
+            if (__instance.Data.PlayerLevel < BetterGameSettings.KickLevelBelow.GetInt())
             {
                 __instance.Kick(setReasonInfo: $" is level {__instance.Data.PlayerLevel}, level must be equal or above {BetterGameSettings.KickLevelBelow.GetInt()} to join");
             }

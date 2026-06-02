@@ -80,6 +80,11 @@ internal static class BetterDataManager
     internal static string antiBotKeywordsFile = Path.Combine(filePathFolderSaveInfo, "AntiBotKeywords.txt");
 
     /// <summary>
+    /// File containing anti-cheat whitelist (friend codes exempt from all checks).
+    /// </summary>
+    internal static string antiCheatWhitelistFile = Path.Combine(filePathFolderSaveInfo, "AntiCheatWhitelist.txt");
+
+    /// <summary>
     /// Array of file paths that should be checked during initialization.
     /// </summary>
     private static string[] Paths =>
@@ -87,7 +92,8 @@ internal static class BetterDataManager
         banPlayerListFile,
         banNameListFile,
         banWordListFile,
-        antiBotKeywordsFile
+        antiBotKeywordsFile,
+        antiCheatWhitelistFile
     ];
 
     /// <summary>
@@ -172,6 +178,11 @@ internal static class BetterDataManager
                 {
                     writer.WriteLine("// Anti-Bot Keywords - one per line, case-insensitive");
                     writer.WriteLine("// Players with names or messages containing these will be kicked");
+                }
+                else if (path == antiCheatWhitelistFile)
+                {
+                    writer.WriteLine("// Anti-Cheat Whitelist - one friend code per line");
+                    writer.WriteLine("// Players matching entries here are EXEMPT from all anti-cheat checks");
                 }
             }
         }
@@ -376,6 +387,19 @@ internal static class BetterDataManager
             .Where(l => !l.Trim().Equals(keyword.Trim(), StringComparison.OrdinalIgnoreCase))
             .ToList();
         File.WriteAllLines(antiBotKeywordsFile, lines);
+    }
+
+    // ── Anti-Cheat Whitelist ──
+
+    /// <summary>
+    /// Checks if a player's friend code is on the anti-cheat whitelist.
+    /// </summary>
+    internal static bool IsWhitelisted(string? friendCode)
+    {
+        if (string.IsNullOrEmpty(friendCode)) return false;
+        if (!File.Exists(antiCheatWhitelistFile)) return false;
+        return File.ReadAllLines(antiCheatWhitelistFile)
+            .Any(line => line.Trim().Equals(friendCode.Trim(), StringComparison.OrdinalIgnoreCase));
     }
 
     // ── Ban Name List ──

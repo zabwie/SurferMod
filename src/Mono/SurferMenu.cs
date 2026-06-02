@@ -290,8 +290,8 @@ public class SurferMenu : SurferBehaviour
 
         GUILayout.Space(8);
         GUILayout.Label("── Thresholds ──", SurferStyles.SectionLabel);
-        DrawOptionSlider("Min Level to Detect", BetterGameSettings.DetectedLevelAbove);
-        DrawOptionSlider("Min Level to Kick", BetterGameSettings.KickLevelBelow);
+DrawOptionSlider("Min Level to Detect", BetterGameSettings.DetectedLevelAbove);
+
 
         GUILayout.Space(8);
         GUILayout.Label("── Role Algorithm ──", SurferStyles.SectionLabel);

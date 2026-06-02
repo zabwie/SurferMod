@@ -21,7 +21,6 @@ internal static class ModManagerPatch
         }
 
         // Update various Surfer systems each frame
-        ExtendedPlayerInfo.UpdateAll();
         BetterAntiCheat.Update();
         LateTask.UpdateAll(Time.deltaTime);
         BetterNotificationManager.Update();

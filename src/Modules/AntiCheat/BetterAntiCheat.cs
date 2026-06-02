@@ -85,6 +85,7 @@ internal static class BetterAntiCheat
     internal static void CheckRPC(PlayerControl player, byte callId, MessageReader oldReader)
     {
         if (player == null || player?.Data == null) return;
+        if (BetterDataManager.IsWhitelisted(player?.Data?.FriendCode)) return;
         if (!IsEnabled || !SurferPlugin.AntiCheat.Value || SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_Anticheat) || !BetterGameSettings.DetectInvalidRPCs.GetBool()) return;
         if (player.IsLocalPlayer()) return;
 
@@ -105,6 +106,7 @@ internal static class BetterAntiCheat
         try
         {
             if (player == null || player?.Data == null) return true;
+            if (BetterDataManager.IsWhitelisted(player?.Data?.FriendCode)) return true;
             if (!IsEnabled || !SurferPlugin.AntiCheat.Value || SurferModdedSupportFlags.HasFlag(SurferModdedSupportFlags.Disable_Anticheat) || !BetterGameSettings.DetectInvalidRPCs.GetBool()) return true;
             if (player.IsLocalPlayer()) return true;
 

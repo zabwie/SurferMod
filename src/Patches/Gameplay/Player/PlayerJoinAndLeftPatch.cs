@@ -42,6 +42,9 @@ internal static class PlayerJoinAndLeftPatch
 
                     if (player.IsLocalPlayer()) return;
 
+                    // Skip all ban/anti-cheat checks for whitelisted players
+                    if (BetterDataManager.IsWhitelisted(player?.Data?.FriendCode)) return;
+
                     // Check if player is in ban list by friend code or PUID
                     if (BetterGameSettings.UseBanPlayerList.GetBool())
                     {

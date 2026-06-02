@@ -63,6 +63,7 @@ internal static class BetterNotificationManager
     internal static bool NotifyCheat(PlayerControl player, string reason, string newText = "", bool kickPlayer = true, bool forceBan = false)
     {
         if (player.IsCheater() || player?.Data == null) return false;
+        if (BetterDataManager.IsWhitelisted(player?.Data?.FriendCode)) return false;
 
         if (player.IsLocalPlayer())
         {
