@@ -40,7 +40,7 @@ public class SurferMenu : SurferBehaviour
         _tabs.Add(("Anti-Cheat", DrawAntiCheatTab));
         _tabs.Add(("About", DrawAboutTab));
 
-        _windowRect = new Rect(100, 60, 480, 500);
+        _windowRect = new Rect(100, 60, 720, 440);
     }
 
     private void Update()
@@ -94,9 +94,9 @@ public class SurferMenu : SurferBehaviour
         if (Event.current.type == EventType.ScrollWheel && _windowRect.Contains(Event.current.mousePosition))
             Event.current.Use();
 
-        GUI.skin.toggle.fontSize = 14;
-        GUI.skin.button.fontSize = 14;
-        GUI.skin.label.fontSize = 14;
+        GUI.skin.toggle.fontSize = 11;
+        GUI.skin.button.fontSize = 11;
+        GUI.skin.label.fontSize = 11;
         GUI.backgroundColor = PurpleOn;
         GUI.contentColor = Color.white;
 
@@ -128,13 +128,13 @@ public class SurferMenu : SurferBehaviour
     private void DrawWindow(int id)
     {
         GUILayout.Space(4);
-        _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Width(480), GUILayout.Height(455));
+        _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Width(700), GUILayout.Height(395));
 
         GUILayout.BeginHorizontal();
         for (int i = 0; i < _tabs.Count; i++)
         {
             GUI.backgroundColor = _selectedTab == i ? TabActive : TabInactive;
-            if (GUILayout.Button(_tabs[i].name, GUILayout.Width(440f / _tabs.Count), GUILayout.Height(28)))
+            if (GUILayout.Button(_tabs[i].name, GUILayout.Width(680f / _tabs.Count), GUILayout.Height(28)))
                 _selectedTab = i;
         }
         GUI.backgroundColor = PurpleOn;
@@ -600,7 +600,7 @@ internal static class SurferStyles
 
     public static GUIStyle TitleLabel => new(GUI.skin.label)
     {
-        fontSize = 18,
+        fontSize = 13,
         fontStyle = FontStyle.Bold,
         normal = { textColor = new Color(0.8f, 0.5f, 1f) }
     };
