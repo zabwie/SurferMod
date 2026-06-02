@@ -15,6 +15,8 @@ internal static class PrivateOnlyLobbyManager
     [HarmonyPostfix]
     internal static void PlayerControlDie_Postfix(PlayerControl __instance)
     {
+        if (!GameState.IsHost) return;
+
         if (GameState.IsPrivateOnlyLobby && BetterGameSettings.RemovePetOnDeath.GetBool())
         {
             __instance.RpcSetPet(PetData.EmptyId);

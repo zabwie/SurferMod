@@ -65,6 +65,8 @@ internal static class RoleManagerPatch
 
     internal static void RegularBetterRoleAssignment()
     {
+        if (!GameState.IsHost) return;
+
         Logger_.LogHeader($"Better Role Assignment Has Started", "RoleManager");
 
         // Initialize impostor multiplier tracking for all players
@@ -231,6 +233,8 @@ internal static class RoleManagerPatch
 
     internal static void HideAndSeekBetterRoleAssignment()
     {
+        if (!GameState.IsHost) return;
+
         Logger_.LogHeader($"Better Role Assignment Has Started", "RoleManager");
 
         // Get impostor count from Surfer settings (defaults to 1)
