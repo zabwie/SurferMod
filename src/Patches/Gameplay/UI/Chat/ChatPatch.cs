@@ -60,6 +60,21 @@ internal static class ChatPatch
         HudManager.Instance.Chat.AlignAllBubbles();
     }
 
+    private static bool _chatToggled;
+
+    [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
+    [HarmonyPrefix]
+    private static bool ChatController_Toggle_Prefix(ChatController __instance)
+    {
+        if (SurferPlugin.ChatInGameplay.Value && GameState.IsInGamePlay && !GameState.IsMeeting && PlayerControl.LocalPlayer.IsAlive())
+        {
+            _chatToggled = !_chatToggled;
+            __instance.SetVisible(_chatToggled);
+            return false;
+        }
+        return true;
+    }
+
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
     [HarmonyPostfix]
     private static void ChatController_Toggle_Postfix(/*ChatController __instance*/)
