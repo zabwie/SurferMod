@@ -52,6 +52,7 @@ internal sealed class CheckProtectHandler : RPCHandler
             return false;
         }
 
+        Logger_.Log($"[GA-Protect] CheckProtect allowed on host — sender={sender?.Data?.PlayerName}");
         return true;
     }
 
