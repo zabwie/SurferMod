@@ -49,14 +49,22 @@ internal static class RoleManagerPatch
             return true;
         }
 
-        // Use different algorithms for different game modes
-        if (!GameState.IsHideNSeek)
+        try
         {
-            RegularBetterRoleAssignment();
+            // Use different algorithms for different game modes
+            if (!GameState.IsHideNSeek)
+            {
+                RegularBetterRoleAssignment();
+            }
+            else
+            {
+                HideAndSeekBetterRoleAssignment();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            HideAndSeekBetterRoleAssignment();
+            Logger_.Error(ex, "RoleManager.SelectRoles");
+            return true; // Fall through to vanilla role assignment
         }
 
         // Return false to prevent vanilla role assignment from running
@@ -66,6 +74,8 @@ internal static class RoleManagerPatch
     internal static void RegularBetterRoleAssignment()
     {
         if (!GameState.IsHost) return;
+
+        ImpostorMultiplier.Clear();
 
         Logger_.LogHeader($"Better Role Assignment Has Started", "RoleManager");
 

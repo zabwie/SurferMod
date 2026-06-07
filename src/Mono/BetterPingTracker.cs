@@ -89,7 +89,7 @@ internal sealed class BetterPingTracker : SurferBehaviour
         text?.SetText(sb.ToString());
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
         base.OnDestroy();
         if (Instance == this)

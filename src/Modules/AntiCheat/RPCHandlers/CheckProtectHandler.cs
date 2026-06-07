@@ -47,12 +47,9 @@ internal sealed class CheckProtectHandler : RPCHandler
 
     internal override bool HandleAntiCheatCancel(PlayerControl? sender, MessageReader reader)
     {
-        if (!GameState.IsHost)
-        {
-            return false;
-        }
-
-        Logger_.Log($"[GA-Protect] CheckProtect allowed on host — sender={sender?.Data?.PlayerName}");
+        // Allow CheckProtect through on all clients. Non-host clients should not
+        // normally receive this RPC (it's client→host only), but blocking it here
+        // would interfere with legitimate GA protection in edge cases.
         return true;
     }
 

@@ -14,7 +14,7 @@ internal sealed class UpdateSystemHandler : RPCHandler
 
     private readonly Dictionary<uint, Func<PlayerControl?, ISystemType, MessageReader, byte, bool>> systemHandlers;
 
-    private static SabotageSystemType SabotageSystem => 
+    private static SabotageSystemType? SabotageSystem => 
         ShipStatus.Instance != null && ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Sabotage, out var sys) 
         ? sys.Cast<SabotageSystemType>() 
         : null;
@@ -23,16 +23,16 @@ internal sealed class UpdateSystemHandler : RPCHandler
     {
         systemHandlers = new Dictionary<uint, Func<PlayerControl?, ISystemType, MessageReader, byte, bool>>
         {
-            { (uint)SystemTypes.Sabotage, (sender, system, reader, count) => HandleSabotageSystem(sender, system.Cast<SabotageSystemType>(), reader) },
-            { (uint)SystemTypes.Ventilation, (sender, system, reader, count) => HandleVentilationSystem(sender, system.Cast<VentilationSystem>(), count) },
-            { (uint)SystemTypes.Electrical, (sender, system, reader, count) => HandleSwitchSystem(sender, system.Cast<SwitchSystem>(), count) },
-            { (uint)SystemTypes.Comms, (sender, system, reader, count) => HandleCommsSystem(sender, system, count) },
-            { (uint)SystemTypes.MushroomMixupSabotage, (sender, system, reader, count) => HandleMushroomMixupSabotageSystem(sender, system.Cast<MushroomMixupSabotageSystem>(), count) },
-            { (uint)SystemTypes.Doors, (sender, system, reader, count) => HandleDoorsSystem(sender, system.Cast<DoorsSystemType>(), count) },
-            { (uint)SystemTypes.Reactor, (sender, system, reader, count) => HandleReactorSystem(sender, system.Cast<ReactorSystemType>(), count) },
-            { (uint)SystemTypes.Laboratory, (sender, system, reader, count) => HandleReactorSystem(sender, system.Cast<ReactorSystemType>(), count) },
-            { (uint)SystemTypes.HeliSabotage, (sender, system, reader, count) => HandleHeliSabotageSystem(sender, system.Cast<HeliSabotageSystem>(), count) },
-            { (uint)SystemTypes.LifeSupp, (sender, system, reader, count) => HandleLifeSuppSystem(sender, system.Cast<LifeSuppSystemType>(), count) }
+            { (uint)SystemTypes.Sabotage, (sender, system, reader, count) => { try { return HandleSabotageSystem(sender, system.Cast<SabotageSystemType>(), reader); } catch { return true; } } },
+            { (uint)SystemTypes.Ventilation, (sender, system, reader, count) => { try { return HandleVentilationSystem(sender, system.Cast<VentilationSystem>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.Electrical, (sender, system, reader, count) => { try { return HandleSwitchSystem(sender, system.Cast<SwitchSystem>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.Comms, (sender, system, reader, count) => { try { return HandleCommsSystem(sender, system, count); } catch { return true; } } },
+            { (uint)SystemTypes.MushroomMixupSabotage, (sender, system, reader, count) => { try { return HandleMushroomMixupSabotageSystem(sender, system.Cast<MushroomMixupSabotageSystem>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.Doors, (sender, system, reader, count) => { try { return HandleDoorsSystem(sender, system.Cast<DoorsSystemType>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.Reactor, (sender, system, reader, count) => { try { return HandleReactorSystem(sender, system.Cast<ReactorSystemType>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.Laboratory, (sender, system, reader, count) => { try { return HandleReactorSystem(sender, system.Cast<ReactorSystemType>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.HeliSabotage, (sender, system, reader, count) => { try { return HandleHeliSabotageSystem(sender, system.Cast<HeliSabotageSystem>(), count); } catch { return true; } } },
+            { (uint)SystemTypes.LifeSupp, (sender, system, reader, count) => { try { return HandleLifeSuppSystem(sender, system.Cast<LifeSuppSystemType>(), count); } catch { return true; } } }
         };
     }
 
@@ -56,7 +56,6 @@ internal sealed class UpdateSystemHandler : RPCHandler
     {
         if (GameState.IsHost && sender.IsHost()) return true;
 
-        MessageReader oldReader = MessageReader.Get(reader);
         byte count = reader.ReadByte();
 
         if (ShipStatus.Instance.Systems.TryGetValue(CatchedSystemType, out ISystemType system))
@@ -65,12 +64,9 @@ internal sealed class UpdateSystemHandler : RPCHandler
 
             if (systemHandlers.TryGetValue(systemKey, out var handler))
             {
-                oldReader.Recycle();
-                return handler.Invoke(sender, system, oldReader, count);
+                return handler.Invoke(sender, system, reader, count);
             }
         }
-
-        oldReader.Recycle();
 
         return true;
     }
@@ -127,9 +123,9 @@ internal sealed class UpdateSystemHandler : RPCHandler
             var hqHudSystem = system.Cast<HqHudSystemType>();
             return HandleHqHudSystem(sender, hqHudSystem, count);
         }
-        catch
+        catch (Exception ex)
         {
-
+            Logger_.Error(ex, "UpdateSystemHandler.HandleCommsSystem.HqHud");
         }
 
         try
@@ -137,9 +133,9 @@ internal sealed class UpdateSystemHandler : RPCHandler
             var hudOverrideSystem = system.Cast<HudOverrideSystemType>();
             return HandleHudOverrideSystem(sender, hudOverrideSystem, count);
         }
-        catch
+        catch (Exception ex)
         {
-
+            Logger_.Error(ex, "UpdateSystemHandler.HandleCommsSystem.HudOverride");
         }
 
         return true;

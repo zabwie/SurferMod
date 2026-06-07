@@ -70,6 +70,8 @@ internal static class ClientPatch
     {
         GameState.IsGameStarting = false;
 
+        if (GameData.Instance == null) return;
+
         // Preserve all player GameObjects during scene transitions
         foreach (var data in GameData.Instance.AllPlayers)
         {
@@ -79,6 +81,7 @@ internal static class ClientPatch
         // Move player GameObjects to active scene after a short delay
         LateTask.Schedule(() =>
         {
+            if (GameData.Instance == null) return;
             foreach (var data in GameData.Instance.AllPlayers)
             {
                 SceneManager.MoveGameObjectToScene(data.gameObject, SceneManager.GetActiveScene());

@@ -16,9 +16,16 @@ internal static class InnerNetClientPatch
     [HarmonyPrefix]
     private static bool InnerNetClient_SendOrDisconnect_Prefix(InnerNetClient __instance, MessageWriter msg)
     {
-        // Route all outgoing messages through custom NetworkManager
-        // This allows Surfer to intercept/modify network traffic
-        NetworkManager.SendToServer(msg);
+        try
+        {
+            // Route all outgoing messages through custom NetworkManager
+            // This allows Surfer to intercept/modify network traffic
+            NetworkManager.SendToServer(msg);
+        }
+        catch (Exception ex)
+        {
+            Logger_.Error(ex, "InnerNetClient.SendOrDisconnect");
+        }
         return false;
     }
 
@@ -26,9 +33,16 @@ internal static class InnerNetClientPatch
     [HarmonyPrefix]
     private static bool InnerNetClient_HandleGameDataInner_Prefix([HarmonyArgument(0)] MessageReader oldReader)
     {
-        // Route all incoming game data through custom NetworkManager
-        // This allows Surfer to process/modify incoming network messages
-        NetworkManager.HandleGameData(oldReader);
+        try
+        {
+            // Route all incoming game data through custom NetworkManager
+            // This allows Surfer to process/modify incoming network messages
+            NetworkManager.HandleGameData(oldReader);
+        }
+        catch (Exception ex)
+        {
+            Logger_.Error(ex, "InnerNetClient.HandleGameData");
+        }
         return false;
     }
 

@@ -37,7 +37,7 @@ internal static class Logger_
                 ConsoleManager.ConsoleStream.WriteLine($"{DateTime.Now:HH:mm} Surfer[{tag}]: {Utils.RemoveHtmlText(info)}");
             }
         }
-        catch { }
+        catch (Exception ex) { SurferPlugin.Logger.LogError($"Logger_.Log failed: {ex}"); }
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ internal static class Logger_
             string newLine = $"{mark}: " + Encryptor.Encrypt($"{info}");
             File.AppendAllText(logFilePath, newLine + Environment.NewLine);
         }
-        catch { }
+        catch (Exception ex) { SurferPlugin.Logger.LogError($"Logger_.LogPrivate failed: {ex}"); }
     }
 }
 

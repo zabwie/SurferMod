@@ -81,7 +81,7 @@ internal static class PlayerJoinAndLeftPatch
     {
         Logger_.Log($"[CRASH-TRACE] OnPlayerLeft START — clientId={data?.Character?.PlayerId}");
         // Reclaim favorite color when player leaves in lobby
-        if (GameState.IsLobby)
+        if (GameState.IsLobby && PlayerControl.LocalPlayer != null)
         {
             var favColorId = (byte)SurferPlugin.FavoriteColor.Value;
             if (SurferPlugin.FavoriteColor.Value >= 0)

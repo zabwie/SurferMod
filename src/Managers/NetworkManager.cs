@@ -373,6 +373,7 @@ internal static class NetworkManager
         if (clientData != null && !string.IsNullOrWhiteSpace(sceneName))
         {
             InnerNetClient.StartCoroutine(InnerNetClient.CoOnPlayerChangedScene(clientData, sceneName));
+            reader.Recycle();
         }
         else
         {
@@ -450,7 +451,7 @@ internal static class NetworkManager
     {
         if (GameState.IsGameStarting || !GameState.IsInGamePlay) return true;
 
-        if (player.BetterData() != null)
+        if (player.BetterData() != null && !player.IsLocalPlayer())
         {
             player.BetterData().AntiCheatInfo.RPCSentPS++;
             if (player.BetterData().AntiCheatInfo.RPCSentPS >= ExtendedAntiCheatInfo.MAX_RPC_SENT)

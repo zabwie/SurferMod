@@ -72,6 +72,9 @@ internal static class RPC
                         if (bd != null) bd.HandshakeHandler.HandleSecretHashFromPlayer(reader);
                     }
                     break;
+                default:
+                    Logger_.Warning($"Unhandled CustomRPC in HandleCustomRPCPacked: {customRPC}", "RPC");
+                    break;
             }
         }
 
@@ -109,7 +112,12 @@ internal static class RPC
                         if (bd != null) bd.HandshakeHandler.HandleSecretHashFromPlayer(reader);
                     }
                     break;
+                default:
+                    Logger_.Warning($"Unhandled CustomRPC in HandleCustomRPCLegacy: {callId}", "RPC");
+                    break;
             }
+
+            reader.Recycle();
         }
         else if (!Enum.IsDefined(typeof(CustomRPC), (int)unchecked(callId)))
         {
@@ -125,7 +133,7 @@ internal static class RPC
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { Logger_.Error(ex, "RPC.CustomRPC"); }
         }
     }
 
@@ -148,8 +156,9 @@ internal static class RPC
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger_.Error(ex, "RPC.IsPackedCustomRpc");
                 return false;
             }
         }

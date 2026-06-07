@@ -12,7 +12,7 @@ internal sealed class SendQuickChatHandler : RPCHandler
 
     internal override void HandleAntiCheat(PlayerControl? sender, MessageReader reader)
     {
-        if (sender.IsAlive() && GameState.IsInGamePlay && !GameState.IsMeeting && !GameState.IsExilling || reader.BytesRemaining == 0)
+        if (sender.IsAlive() && GameState.IsInGamePlay && !GameState.IsMeeting && !GameState.IsExilling && reader.BytesRemaining == 0)
         {
             if (BetterNotificationManager.NotifyCheat(sender, GetFormatActionText(), forceBan: reader.BytesRemaining == 0))
             {

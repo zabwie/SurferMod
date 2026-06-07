@@ -241,7 +241,7 @@ internal static class GameState
     /// <summary>
     /// Gets whether the lobby is private-only (requires specific settings).
     /// </summary>
-    internal static bool IsPrivateOnlyLobby => (SurferPlugin.PrivateOnlyLobby.Value || AmongUsClient.Instance.AmLocalHost) && IsHost;
+    internal static bool IsPrivateOnlyLobby => (SurferPlugin.PrivateOnlyLobby.Value || AmongUsClient.Instance?.AmLocalHost == true) && IsHost;
 
     /// <summary>
     /// Gets whether the local player can move.

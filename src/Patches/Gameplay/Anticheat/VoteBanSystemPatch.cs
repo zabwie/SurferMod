@@ -47,7 +47,7 @@ internal static class VoteBanSystemPatch
         }
 
         // Prevent voting in lobby (anti-cheat measure)
-        if (GameState.IsLobby)
+        if (GameState.IsLobby && !GameState.IsInGamePlay)
         {
             TryFlagPlayer();
             return false;

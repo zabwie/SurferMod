@@ -66,7 +66,7 @@ internal class PlatformSpoofPatch
 
                 }, 3.5f, shouldLog: false);
             }
-            catch { }
+            catch (Exception ex) { Logger_.Error(ex, "PlatformSpoofPatch"); }
         }
     }
 }

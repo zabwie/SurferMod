@@ -20,7 +20,7 @@ internal sealed class ReportDeadBodyHandler : RPCHandler
                 LogRpcInfo($"Report dead body blocked: Game not in play or roles not assigned");
             }
 
-            return CancelAsHost;
+            return false;
         }
 
         if (GameState.IsMeeting && MeetingHudPatch.timeOpen > 5f || GameState.IsHideNSeek || sender.IsInVent() || sender.shapeshifting
@@ -32,7 +32,7 @@ internal sealed class ReportDeadBodyHandler : RPCHandler
                 LogRpcInfo($"Report blocked: {issue}");
             }
 
-            return CancelAsHost;
+            return false;
         }
 
         var deadPlayerInfo = reader.ReadPlayerDataId();
@@ -48,7 +48,7 @@ internal sealed class ReportDeadBodyHandler : RPCHandler
                     LogRpcInfo($"Invalid body report: {issue}");
                 }
 
-                return CancelAsHost;
+                return false;
             }
         }
         else
@@ -60,7 +60,7 @@ internal sealed class ReportDeadBodyHandler : RPCHandler
                     LogRpcInfo($"Emergency meeting: No meetings remaining ({sender.RemainingEmergencies} left)");
                 }
 
-                return CancelAsHost;
+                return false;
             }
         }
 

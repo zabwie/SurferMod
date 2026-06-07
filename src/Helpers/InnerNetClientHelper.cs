@@ -132,14 +132,13 @@ internal static class InnerNetClientHelper
     /// <returns>An array of MessageReaders.</returns>
     internal static MessageReader[] ToReaders(this MessageWriter writer)
     {
-        var reader = writer.ToReader();
+        var reader = MessageReader.Get(writer.ToByteArray(false));
         List<MessageReader> readers = [];
-
         while (reader.Position < reader.Length)
         {
             readers.Add(reader.ReadMessage());
         }
-
+        reader.Recycle();
         return [.. readers];
     }
 

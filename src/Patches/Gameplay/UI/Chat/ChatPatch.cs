@@ -15,6 +15,7 @@ internal static class ChatPatch
 {
     internal static List<string> ChatHistory = [];
     internal static int CurrentHistorySelection = -1;
+    internal const int MAX_CHAT_HISTORY = 200;
 
     internal const string COMMAND_POSTFIX_ID = "<size=0%>IsCommand</size>";
 
@@ -207,7 +208,7 @@ internal static class ChatPatch
         }
 
         // Show role for dead players or if local player is Guardian Angel
-        if (PlayerControl.LocalPlayer.Is(RoleTypes.GuardianAngel) && !sourcePlayer.IsAlive() || !PlayerControl.LocalPlayer.Is(RoleTypes.GuardianAngel))
+        if (PlayerControl.LocalPlayer.Is(RoleTypes.GuardianAngel) || !sourcePlayer.IsAlive())
         {
             sbTag.Append(Role);
         }
@@ -299,13 +300,13 @@ internal static class ChatPatch
             var background = chatBubble.transform.Find("Background");
             if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 1f);
 
-            // Make dead player chat bubbles more transparent
+            // Make dead player chat bubbles slightly transparent
             var xMark = chatBubble.transform.Find("PoolablePlayer/xMark");
             if (xMark != null)
             {
                 if (xMark.GetComponentInChildren<SpriteRenderer>(true).enabled == true)
                 {
-                    if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 0.5f);
+                    if (background != null) background.GetComponentInChildren<SpriteRenderer>(true).color = new Color(0.15f, 0.15f, 0.15f, 0.7f);
                 }
             }
         }

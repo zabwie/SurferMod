@@ -66,7 +66,8 @@ internal class ZoomPatch
         {
             float size = zoomIn ? 1 / 1.5f : 1.5f;
             Camera.main.orthographicSize *= size;
-            HudManager.Instance.UICamera.orthographicSize *= size;
+            if (HudManager.Instance != null)
+                HudManager.Instance.UICamera.orthographicSize *= size;
         }
 
         HudManager.Instance?.ShadowQuad?.gameObject?.SetActive(

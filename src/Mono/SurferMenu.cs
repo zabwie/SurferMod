@@ -32,6 +32,7 @@ public class SurferMenu : SurferBehaviour
     private static readonly Color32 BgColor = new(18, 18, 24, 240);
     private static readonly Color32 TabActive = new(40, 0, 60, 255);
     private static readonly Color32 TabInactive = new(25, 25, 35, 255);
+    private static readonly Color ToggleOffText = new(0.7f, 0.6f, 0.8f);
 
     private void Start()
     {
@@ -40,7 +41,7 @@ public class SurferMenu : SurferBehaviour
         _tabs.Add(("Anti-Cheat", DrawAntiCheatTab));
         _tabs.Add(("About", DrawAboutTab));
 
-        _windowRect = new Rect(100, 60, 720, 440);
+        _windowRect = new Rect(100, 60, 620, 490);
     }
 
     private void Update()
@@ -94,9 +95,19 @@ public class SurferMenu : SurferBehaviour
         if (Event.current.type == EventType.ScrollWheel && _windowRect.Contains(Event.current.mousePosition))
             Event.current.Use();
 
-        GUI.skin.toggle.fontSize = 11;
-        GUI.skin.button.fontSize = 11;
-        GUI.skin.label.fontSize = 11;
+        GUI.skin.toggle.fontSize = 12;
+        GUI.skin.button.fontSize = 12;
+        GUI.skin.label.fontSize = 12;
+
+        // Dark-themed scrollbar
+        var vBar = GUI.skin.verticalScrollbar;
+        vBar.fixedWidth = 8;
+        vBar.normal.background = GuiHelper.MakeTex(8, 1, new Color(0.08f, 0.08f, 0.12f));
+        var vThumb = GUI.skin.verticalScrollbarThumb;
+        vThumb.fixedWidth = 8;
+        vThumb.normal.background = GuiHelper.MakeTex(8, 1, new Color(0.35f, 0.15f, 0.45f));
+        vThumb.hover.background = GuiHelper.MakeTex(8, 1, new Color(0.5f, 0.2f, 0.6f));
+
         GUI.backgroundColor = PurpleOn;
         GUI.contentColor = Color.white;
 
@@ -128,13 +139,20 @@ public class SurferMenu : SurferBehaviour
     private void DrawWindow(int id)
     {
         GUILayout.Space(4);
-        _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Width(700), GUILayout.Height(395));
+
+        GUI.skin.horizontalScrollbar.fixedHeight = 0;
+        GUI.skin.horizontalScrollbarThumb.fixedHeight = 0;
+
+        _scrollPos = GUILayout.BeginScrollView(_scrollPos, false, true, GUILayout.Width(600), GUILayout.Height(440));
+
+        GUILayout.BeginVertical(GUILayout.Width(580));
 
         GUILayout.BeginHorizontal();
+        float tabWidth = 565f / _tabs.Count;
         for (int i = 0; i < _tabs.Count; i++)
         {
             GUI.backgroundColor = _selectedTab == i ? TabActive : TabInactive;
-            if (GUILayout.Button(_tabs[i].name, GUILayout.Width(680f / _tabs.Count), GUILayout.Height(28)))
+            if (GUILayout.Button(_tabs[i].name, GUILayout.Width(tabWidth), GUILayout.Height(28)))
                 _selectedTab = i;
         }
         GUI.backgroundColor = PurpleOn;
@@ -145,6 +163,7 @@ public class SurferMenu : SurferBehaviour
         if (_selectedTab >= 0 && _selectedTab < _tabs.Count)
             _tabs[_selectedTab].draw();
 
+        GUILayout.EndVertical();
         GUILayout.EndScrollView();
 
         GUI.DragWindow(new Rect(0, 0, 10000, 20));
@@ -357,14 +376,14 @@ DrawOptionSlider("Min Level to Detect", BetterGameSettings.DetectedLevelAbove);
     {
         if (config == null) return;
 
-        GUILayout.BeginHorizontal();
+        GUILayout.BeginHorizontal(GUILayout.Height(20));
         bool val = config.Value;
         GUI.backgroundColor = val ? PurpleOn : PurpleOff;
         bool newVal = GUILayout.Toggle(val, "", GUILayout.Width(20));
         GUI.backgroundColor = PurpleOn;
 
-        GUILayout.Space(4);
-        GUI.contentColor = val ? Color.white : new Color(0.6f, 0.6f, 0.6f);
+        GUILayout.Space(6);
+        GUI.contentColor = val ? Color.white : ToggleOffText;
         GUILayout.Label(label);
         GUI.contentColor = Color.white;
 
@@ -380,14 +399,14 @@ DrawOptionSlider("Min Level to Detect", BetterGameSettings.DetectedLevelAbove);
     {
         if (item == null) return;
 
-        GUILayout.BeginHorizontal();
+        GUILayout.BeginHorizontal(GUILayout.Height(20));
         bool val = item.GetValue();
         GUI.backgroundColor = val ? PurpleOn : PurpleOff;
         bool newVal = GUILayout.Toggle(val, "", GUILayout.Width(20));
         GUI.backgroundColor = PurpleOn;
 
-        GUILayout.Space(4);
-        GUI.contentColor = val ? Color.white : new Color(0.6f, 0.6f, 0.6f);
+        GUILayout.Space(6);
+        GUI.contentColor = val ? Color.white : ToggleOffText;
         GUILayout.Label(label);
         GUI.contentColor = Color.white;
 
@@ -595,18 +614,31 @@ internal static class SurferStyles
     public static GUIStyle SectionLabel => new(GUI.skin.label)
     {
         fontStyle = FontStyle.Bold,
-        normal = { textColor = new Color(0.8f, 0.5f, 1f) }
+        normal = { textColor = new Color(0.9f, 0.6f, 1f) }
     };
 
     public static GUIStyle TitleLabel => new(GUI.skin.label)
     {
-        fontSize = 13,
+        fontSize = 14,
         fontStyle = FontStyle.Bold,
-        normal = { textColor = new Color(0.8f, 0.5f, 1f) }
+        normal = { textColor = new Color(0.9f, 0.6f, 1f) }
     };
 
     public static GUIStyle AlignedLabel => new(GUI.skin.label)
     {
         alignment = TextAnchor.MiddleLeft
     };
+}
+
+internal static class GuiHelper
+{
+    internal static Texture2D MakeTex(int width, int height, Color col)
+    {
+        var pix = new Color[width * height];
+        for (int i = 0; i < pix.Length; i++) pix[i] = col;
+        var tex = new Texture2D(width, height);
+        tex.SetPixels(pix);
+        tex.Apply();
+        return tex;
+    }
 }

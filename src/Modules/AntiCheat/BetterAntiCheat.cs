@@ -26,6 +26,7 @@ internal static class BetterAntiCheat
     /// </summary>
     internal static void Update()
     {
+        if (!SurferPlugin.AntiCheat.Value) return;
         if (GameState.IsHost && GameState.IsInGame)
         {
             foreach (var player in SurferPlugin.AllPlayerControls)
@@ -173,7 +174,7 @@ internal static class BetterAntiCheat
                 }
             }
 
-            if (GameState.IsInGame && GameState.IsLobby && !GameState.IsGameStarting)
+            if (GameState.IsInGame && GameState.IsLobby && !GameState.IsGameStarting && !GameState.IsMeeting)
             {
                 if (callId is (byte)RpcCalls.StartMeeting
                     or (byte)RpcCalls.ReportDeadBody
@@ -220,7 +221,7 @@ internal static class BetterAntiCheat
         }
         catch (Exception ex)
         {
-            Logger_.Error(ex);
+            Logger_.Error(ex, "BetterAntiCheat.CheckCancelRPC");
             return true;
         }
     }

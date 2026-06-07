@@ -54,6 +54,8 @@ internal static class ChatCommandsPatch
             // Add to chat history
             if (ChatPatch.ChatHistory.Count == 0 || ChatPatch.ChatHistory[^1] != text) ChatPatch.ChatHistory.Add(text);
             ChatPatch.CurrentHistorySelection = ChatPatch.ChatHistory.Count;
+            if (ChatPatch.ChatHistory.Count > ChatPatch.MAX_CHAT_HISTORY)
+                ChatPatch.ChatHistory.RemoveRange(0, ChatPatch.ChatHistory.Count - ChatPatch.MAX_CHAT_HISTORY);
             return true;
         }
 
@@ -69,18 +71,8 @@ internal static class ChatCommandsPatch
         // Add command to chat history
         if (ChatPatch.ChatHistory.Count == 0 || ChatPatch.ChatHistory[^1] != text) ChatPatch.ChatHistory.Add(text);
         ChatPatch.CurrentHistorySelection = ChatPatch.ChatHistory.Count;
-
-        // Reset chat timer if command sets it
-        if (closestCommand?.SetChatTimer == true)
-        {
-            __instance.timeSinceLastMessage = 0f;
-        }
-
-        // Clear chat input
-        __instance.freeChatField.Clear();
-        __instance.quickChatMenu.Clear();
-        __instance.quickChatField.Clear();
-
+        if (ChatPatch.ChatHistory.Count > ChatPatch.MAX_CHAT_HISTORY)
+            ChatPatch.ChatHistory.RemoveRange(0, ChatPatch.ChatHistory.Count - ChatPatch.MAX_CHAT_HISTORY);
         return false;
     }
 

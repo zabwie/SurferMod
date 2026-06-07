@@ -28,7 +28,7 @@ internal class AnimatedMapIcon : SurferBehaviour
     /// <summary>
     /// Initializes the component by storing the original scale of the icon.
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
         base.Awake();
         originalScale = transform.localScale;

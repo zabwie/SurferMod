@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Surfer.Data;
+using Surfer.Helpers;
 
 namespace Surfer.Modules;
 
@@ -20,18 +21,19 @@ internal static class AntiBotPatch
         string lowerName = sourcePlayer.Data?.PlayerName?.ToLowerInvariant() ?? "";
         string lowerMsg = chatText?.ToLowerInvariant() ?? "";
 
-        foreach (var kw in keywords)
-        {
-            if (lowerName.Contains(kw) || lowerMsg.Contains(kw))
+            foreach (var kw in keywords)
             {
-                int clientId = sourcePlayer.Data?.ClientId ?? -1;
-                if (clientId >= 0)
+                if (lowerName.Contains(kw) || lowerMsg.Contains(kw))
                 {
-                    AmongUsClient.Instance.KickPlayer(clientId, false);
+                    Logger_.Log($"AntiBot dropped message from {sourcePlayer.Data?.PlayerName}: \"{chatText}\" (matched keyword: \"{kw}\")", "AntiBot");
+                    int clientId = sourcePlayer.Data?.ClientId ?? -1;
+                    if (clientId >= 0)
+                    {
+                        AmongUsClient.Instance.KickPlayer(clientId, false);
+                    }
+                    return false;
                 }
-                return false;
             }
-        }
 
         return true;
     }

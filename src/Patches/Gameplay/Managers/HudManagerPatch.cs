@@ -112,8 +112,9 @@ internal static class HudManagerPatch
                 }
             }
         }
-        catch
+        catch (Exception ex)
         {
+            Logger_.Error(ex, "HudManagerPatch.Update");
         }
     }
 }

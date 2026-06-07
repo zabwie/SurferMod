@@ -146,6 +146,7 @@ internal static class GameSummaryPatch
 
     private static NetworkedPlayerInfo[] GetSortedPlayers()
     {
+        if (GameData.Instance == null) return [];
         return GameData.Instance.AllPlayers
             .ToArray()
             .OrderBy(p => p.Disconnected)
@@ -171,7 +172,7 @@ internal static class GameSummaryPatch
 
     private static string BuildPlayerLine(NetworkedPlayerInfo playerData)
     {
-        var name = $"<color={Utils.Color32ToHex(Palette.PlayerColors[playerData.DefaultOutfit.ColorId])}>{playerData.BetterData().RealName}</color>";
+        var name = $"<color={Utils.Color32ToHex(Palette.PlayerColors[playerData.DefaultOutfit.ColorId])}>{playerData.BetterData()?.RealName ?? playerData.PlayerName}</color>";
         var roleInfo = BuildRoleInfo(playerData);
         var deathReason = BuildDeathReason(playerData);
 
@@ -180,6 +181,7 @@ internal static class GameSummaryPatch
 
     private static string BuildRoleInfo(NetworkedPlayerInfo playerData)
     {
+        if (playerData.Role == null) return string.Empty;
         var themeColor = Utils.GetTeamHexColor(playerData.Role.TeamType);
         var theme = (string text) => $"<color={themeColor}>{text}</color>";
 
@@ -187,7 +189,7 @@ internal static class GameSummaryPatch
 
         if (playerData.Role.IsImpostor)
         {
-            var kills = playerData.BetterData().RoleInfo.Kills;
+            var kills = playerData.BetterData()?.RoleInfo?.Kills ?? 0;
             return $"({roleName}) → {theme($"{Translator.GetString("Kills")}: {kills}")}";
         }
 

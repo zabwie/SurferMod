@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Surfer.Helpers;
 using System.Text.RegularExpressions;
 
 namespace Surfer.Modules;
@@ -12,7 +13,14 @@ internal static class BypassUrlBlockPatch
 
         string text = __instance.freeChatField.Text;
         string modifiedText = ReplaceDotsInUrls(text);
-        PlayerControl.LocalPlayer.RpcSendChat(modifiedText);
+        if (PlayerControl.LocalPlayer != null)
+        {
+            PlayerControl.LocalPlayer.RpcSendChat(modifiedText);
+        }
+        else
+        {
+            Logger_.Error("BypassUrlBlock: PlayerControl.LocalPlayer is null, chat message lost", "BypassUrlBlock");
+        }
 
         return false;
     }

@@ -24,6 +24,7 @@ internal sealed class StartVanishHandler : RPCHandler
             {
                 LogRpcInfo($"Phantom attempted to vanish while in vent");
             }
+            return false;
         }
 
         return true;

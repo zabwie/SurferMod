@@ -19,7 +19,7 @@ internal static class AutoKickPatch
         if (!SurferPlugin.AutoKick?.Value ?? true) return;
         if (SurferPlugin.VanillaMode?.Value == true) return;
         if (!AmongUsClient.Instance.AmHost) return;
-        if (!GameState.IsLobby)
+        if (!GameState.IsLobby || GameState.IsInGamePlay)
         {
             _frameCounter = 0;
             _retryCount = 0;

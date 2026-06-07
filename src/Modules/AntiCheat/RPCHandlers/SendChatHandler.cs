@@ -19,7 +19,7 @@ internal sealed class SendChatHandler : RPCHandler
 
         var text = reader.ReadString();
 
-        if (BetterGameSettings.UseBanWordList.GetBool() && (!BetterGameSettings.UseBanWordListOnlyLobby.GetBool() || GameState.IsLobby))
+        if (BetterGameSettings.UseBanWordList.GetBool() && (!BetterGameSettings.UseBanWordListOnlyLobby.GetBool() || (GameState.IsLobby && !GameState.IsInGamePlay)))
         {
             if (TextFileHandler.CompareStringFilters(BetterDataManager.banWordListFile, text.Split(' ')))
             {
@@ -30,7 +30,7 @@ internal sealed class SendChatHandler : RPCHandler
 
     internal override void HandleAntiCheat(PlayerControl? sender, MessageReader reader)
     {
-        if (sender.IsAlive() && GameState.IsInGamePlay && !GameState.IsMeeting && !GameState.IsExilling || DataManager.Settings.Multiplayer.ChatMode == InnerNet.QuickChatModes.QuickChatOnly)
+        if (sender.IsAlive() && GameState.IsInGamePlay && !GameState.IsMeeting && !GameState.IsExilling && DataManager.Settings.Multiplayer.ChatMode == InnerNet.QuickChatModes.QuickChatOnly)
         {
             if (BetterNotificationManager.NotifyCheat(sender, GetFormatActionText()))
             {

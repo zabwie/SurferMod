@@ -146,8 +146,9 @@ internal abstract class RPCHandler
 
                     if (!cancel) break;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger_.Error(ex, $"RPCHandler.HandleRPC - {handler.GetType().Name}");
                 }
             }
             else if (handlerFlag == HandlerFlag.HandleGameDataTag && calledId == handler.GameDataTag)
